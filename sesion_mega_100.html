@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <title>Culturizando Pibes: Mega-Sesión de 100 Preguntas</title>
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 15%, #18181b 0%, #0c0c0e 55%, #050505 100%);
+      --glass-bg: rgba(20, 20, 23, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.09);
+      --glass-shadow: 0 20px 48px rgba(0, 0, 0, 0.8);
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --accent-cyan: #e4e4e7;
+      --accent-emerald: #34d399;
+      --accent-rose: #f43f5e;
+      --accent-amber: #d4d4d8;
+      --accent-indigo: #71717a;
+      --safe-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 16px 16px var(--safe-bottom) 16px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.18;
+    }
+    .glow-1 {
+      top: -120px;
+      left: 15%;
+      width: 400px;
+      height: 400px;
+      background: #27272a;
+    }
+    .glow-2 {
+      bottom: -100px;
+      right: 15%;
+      width: 420px;
+      height: 420px;
+      background: #18181b;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      position: relative;
+      z-index: 1;
+      margin: 0 auto;
+    }
+
+    .crystal-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      box-shadow: var(--glass-shadow);
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #d4d4d8;
+    }
+    .badge-counter {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      color: #a1a1aa;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 5%;
+      background: linear-gradient(90deg, #52525b, #e4e4e7);
+      border-radius: 9999px;
+      transition: width 0.4s ease;
+    }
+
+    .question-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.45;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 52px;
+      padding: 14px 20px;
+      border-radius: 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      outline: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      font-family: inherit;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #27272a 0%, #18181b 100%);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+      filter: brightness(1.2);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-success {
+      background: linear-gradient(180deg, #18181b 0%, #09090b 100%);
+      color: #ffffff;
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    }
+    .btn-success:hover {
+      filter: brightness(1.15);
+      border-color: rgba(52, 211, 153, 0.7);
+    }
+
+    .feedback-row {
+      display: flex;
+      gap: 12px;
+      margin: 18px 0;
+    }
+    .btn-feedback {
+      flex: 1;
+      min-height: 46px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.25s ease;
+    }
+    .btn-feedback.liked {
+      background: rgba(52, 211, 153, 0.25);
+      border-color: var(--accent-emerald);
+      color: #6ee7b7;
+      box-shadow: 0 0 16px rgba(52, 211, 153, 0.3);
+    }
+    .btn-feedback.disliked {
+      background: rgba(244, 63, 94, 0.25);
+      border-color: var(--accent-rose);
+      color: #fda4af;
+      box-shadow: 0 0 16px rgba(244, 63, 94, 0.3);
+    }
+
+    .answer-box {
+      display: none;
+      background: rgba(12, 12, 15, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 20px;
+      margin: 18px 0;
+      animation: fadeIn 0.35s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .answer-header {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-emerald);
+      margin-bottom: 6px;
+    }
+    .answer-text {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    .host-quote {
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid #71717a;
+      border-radius: 0 14px 14px 0;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-style: italic;
+      color: #e4e4e7;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+    .host-quote strong {
+      font-style: normal;
+      color: #fafafa;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .source-box {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 10px;
+    }
+
+    .players-scoring {
+      margin-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 18px;
+    }
+    .scoring-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .player-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .player-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glass-border);
+      border-radius: 9999px;
+      padding: 8px 16px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .player-chip.scored {
+      background: rgba(52, 211, 153, 0.25);
+      border-color: var(--accent-emerald);
+      color: #6ee7b7;
+      box-shadow: 0 0 14px rgba(52, 211, 153, 0.3);
+    }
+
+    .setup-screen, .results-screen {
+      display: none;
+    }
+    .input-player {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      color: #ffffff;
+      font-size: 1rem;
+      outline: none;
+      margin-bottom: 12px;
+      transition: border 0.2s ease;
+    }
+    .input-player:focus {
+      border-color: var(--accent-cyan);
+    }
+    .player-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid var(--glass-border);
+      border-radius: 9999px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      margin: 4px;
+    }
+    .btn-remove-tag {
+      cursor: pointer;
+      color: var(--accent-rose);
+      font-weight: bold;
+    }
+
+    .roster-quick-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 9999px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin: 2px;
+      transition: all 0.2s ease;
+    }
+    .roster-quick-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    .podium-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+    }
+    .podium-rank {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-right: 12px;
+    }
+    .podium-score {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(16, 185, 129, 0.95);
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 9999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 999;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <div class="container">
+
+    <!-- 1. PANTALLA SETUP -->
+    <div id="setupScreen" class="crystal-card" style="display: block;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span class="badge" style="margin-bottom: 12px;">Los Butaneros - Madrid</span>
+        <h1 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 8px;">🔥 Culturizando Pibes</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Ronda de preguntas de cultura general. Añade a los colegas que juegan hoy.</p>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label style="display: block; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Selección rápida del Roster</label>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px;">
+          <button class="roster-quick-btn" onclick="quickAdd('Llopis')">+ Llopis</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Parra')">+ Parra</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Victor')">+ Victor</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Huerta')">+ Huerta</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Andrés')">+ Andrés</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Marta')">+ Marta</button>
+          <button class="roster-quick-btn" onclick="quickAdd('JAE')">+ JAE</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Adri')">+ Adri</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Mandres')">+ Mandres</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Sergio Díez')">+ Sergio Díez</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Garrido')">+ Garrido</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Gonzalito')">+ Gonzalito</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Cadenas')">+ Cadenas</button>
+          <button class="roster-quick-btn" onclick="quickAdd('Jorge')">+ Jorge</button>
+          <button class="roster-quick-btn" style="color: #fb923c; border-color: rgba(249, 115, 22, 0.4);" onclick="addAllButaneros()">⚡ Añadir Todos</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">Añadir Otro Jugador</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="playerNameInput" class="input-player" placeholder="Nombre o mote..." style="margin-bottom: 0;" onkeypress="if(event.key==='Enter') addPlayer()">
+          <button class="btn btn-primary" style="width: auto; padding: 0 24px;" onclick="addPlayer()">Añadir</button>
+        </div>
+      </div>
+
+      <div id="playerListTagContainer" style="display: flex; flex-wrap: wrap; margin-bottom: 24px; min-height: 40px;"></div>
+
+      <button class="btn btn-success" onclick="startTrivia()">🚀 Arrancar Partida</button>
+    </div>
+
+    <!-- 2. PANTALLA PREGUNTAS -->
+    <div id="gameScreen" class="crystal-card" style="display: none;">
+      
+      <div class="header-bar">
+        <span id="categoryBadge" class="badge">Categoría</span>
+        <span id="counterBadge" class="badge badge-counter">1 / 20</span>
+      </div>
+
+      <div class="progress-track">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+
+      <div id="questionText" class="question-title">Cargando pregunta...</div>
+
+      <!-- Botón de Like / Dislike por Pregunta -->
+      <div class="feedback-row">
+        <button id="likeBtn" class="btn btn-feedback" onclick="rateQuestion('like')">
+          👍 Buena Pregunta (<span id="likeCount">0</span>)
+        </button>
+        <button id="dislikeBtn" class="btn btn-feedback" onclick="rateQuestion('dislike')">
+          👎 Una Mierda (<span id="dislikeCount">0</span>)
+        </button>
+      </div>
+
+      <!-- Botón Revelar -->
+      <button id="revealBtn" class="btn btn-primary" onclick="revealAnswer()">
+        👁️ Revelar Respuesta
+      </button>
+
+      <!-- Respuesta Revelada -->
+      <div id="answerSection" class="answer-box">
+        <div class="answer-header">Respuesta Correcta</div>
+        <div id="answerText" class="answer-text">...</div>
+        
+        <div class="host-quote">
+          <strong>🎙️ Host dice:</strong>
+          <span id="hostComment">...</span>
+        </div>
+
+        <div class="source-box">
+          <strong>Fuente Verificada:</strong> <span id="sourceText">...</span>
+        </div>
+
+        <!-- Asignación de Puntos a Jugadores -->
+        <div class="players-scoring">
+          <div class="scoring-title">¿Quién acertó esta pregunta? (Toca para sumar punto)</div>
+          <div id="playerChipsContainer" class="player-chips"></div>
+        </div>
+      </div>
+
+      <!-- Botón Siguiente -->
+      <button id="nextBtn" class="btn btn-success" style="display: none; margin-top: 20px;" onclick="nextQuestion()">
+        Siguiente Pregunta ➡️
+      </button>
+
+    </div>
+
+    <!-- 3. PANTALLA FINAL / RESULTADOS -->
+    <div id="resultsScreen" class="crystal-card" style="display: none;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span class="badge" style="margin-bottom: 12px; background: rgba(52, 211, 153, 0.2); border-color: var(--accent-emerald); color: #6ee7b7;">🏆 Fin de Partida</span>
+        <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 8px;">Clasificación Final</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">El veredicto para los Butaneros.</p>
+      </div>
+
+      <div id="podiumContainer" style="margin-bottom: 24px;"></div>
+
+      <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); border-radius: 18px; padding: 16px; margin-bottom: 24px;">
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Valoración Global del Banco</div>
+        <div style="display: flex; justify-content: space-around; text-align: center;">
+          <div>
+            <div id="totalLikes" style="font-size: 1.4rem; font-weight: 800; color: var(--accent-emerald);">0</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Likes 👍</div>
+          </div>
+          <div>
+            <div id="totalDislikes" style="font-size: 1.4rem; font-weight: 800; color: var(--accent-rose);">0</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Dislikes 👎</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTÓN EXIGIDO: Terminar y copiar resumen -->
+      <button class="btn btn-primary" style="margin-bottom: 12px;" onclick="finishAndCopySummary()">
+        📋 Terminar y copiar resumen
+      </button>
+      
+      <button class="btn btn-feedback" onclick="location.reload()">
+        🔄 Reiniciar Partida
+      </button>
+    </div>
+
+  </div>
+
+  <div id="toast" class="toast">¡Resumen copiado para aprendizaje!</div>
+
+  <script>
+    const QUESTIONS_DATA = [{"id": 1, "categoria": "Historia Antigua", "dificultad": "Elevada", "pregunta": "¿En qué batalla naval del año 480 a.C. la flota de las polis griegas liderada por Temístocles aplastó a la armada persa de Jerjes I en el golfo Sarónico?", "respuesta_correcta": "Batalla de Salamina", "comentario_host": "El que haya dicho las Termópilas que se vea otra vez la peli de los espartanos en taparrabos. Salamina fue en el mar, catetos.", "explicacion_tecnica": "Estratégicamente ideada por Temístocles, la batalla atrajo a los trirremes persas al estrecho canal entre la isla de Salamina y el Ática, donde su superioridad numérica resultó perjudicial.", "fuentes": ["Heródoto, Historias (Libro VIII)", "Cambridge Ancient History"]}, {"id": 2, "categoria": "Historia de Roma", "dificultad": "Elevada", "pregunta": "¿Qué esclavo tracio lideró entre el 73 y el 71 a.C. la mayor rebelión servil contra la República Romana, desafiando a legiones consulares desde el monte Vesubio?", "respuesta_correcta": "Espartaco", "comentario_host": "No es un gladiador de videojuego, puso en jaque a todo el Senado romano antes de que Craso lo crucificara en la Vía Apia.", "explicacion_tecnica": "Espartaco escapó de la escuela de gladiadores de Léntulo Batiato en Capua y lideró a más de 70.000 esclavos durante la Tercera Guerra Servil.", "fuentes": ["Plutarco, Vidas Paralelas (Craso)", "Apiano, Guerras Civiles"]}, {"id": 3, "categoria": "Historia Medieval de España", "dificultad": "Elevada", "pregunta": "¿En qué decisiva batalla del 16 de julio de 1212 la coalición cristiana de Alfonso VIII de Castilla, Pedro II de Aragón y Sancho VII de Navarra derrotó al califa almohade Muhammad al-Nasir?", "respuesta_correcta": "Batalla de Las Navas de Tolosa", "comentario_host": "El punto de inflexión de la Reconquista en Sierra Morena. Si habéis dicho Covadonga os habéis saltado quinientos años de historia de golpe.", "explicacion_tecnica": "Librada en la actual provincia de Jaén, la victoria cristiana desmoronó el poder militar almohade en la península ibérica.", "fuentes": ["Real Academia de la Historia", "García Fitz, 'Las Navas de Tolosa'"]}, {"id": 4, "categoria": "Historia Moderna", "dificultad": "Elevada", "pregunta": "¿Qué emperador del Sacro Imperio Romano Germánico y rey de España abdicó en 1556 dividiendo sus posesiones territoriales entre su hijo Felipe II y su hermano Fernando I?", "respuesta_correcta": "Carlos I de España (Carlos V)", "comentario_host": "En su imperio no se ponía el sol y acabó sus días retirado en el Monasterio de Yuste comiendo arenques y sufriendo de gota.", "explicacion_tecnica": "Carlos I abdicó en Bruselas en 1555-1556, cediendo los Países Bajos y la Monarquía Hispánica a Felipe II y los territorios patrimoniales austríacos y el título imperial a Fernando I.", "fuentes": ["Manuel Fernández Álvarez, 'Carlos V, el César y el hombre'", "Archivo General de Simancas"]}, {"id": 5, "categoria": "Historia Contemporánea", "dificultad": "Elevada", "pregunta": "¿Qué archiduque heredero de la corona austrohúngara fue asesinado junto a su esposa en Sarajevo el 28 de junio de 1914 por Gavrilo Princip, detonando la Primera Guerra Mundial?", "respuesta_correcta": "Francisco Fernando de Austria (Franz Ferdinand)", "comentario_host": "Y no me salgáis con la banda de rock escocesa. El atentado que encendió la mecha de la Gran Guerra en los Balcanes.", "explicacion_tecnica": "Asesinado por el nacionalista serbobosnio Gavrilo Princip, miembro de la organización Joven Bosnia vinculada a la Mano Negra.", "fuentes": ["The Sleepwalkers: How Europe Went to War in 1914 (Christopher Clark)", "Britannica"]}, {"id": 6, "categoria": "Política Internacional", "dificultad": "Elevada", "pregunta": "¿En qué ciudad estadounidense se celebró entre abril y junio de 1945 la conferencia multilateral donde 50 naciones redactaron y firmaron la Carta fundacional de las Naciones Unidas?", "respuesta_correcta": "San Francisco", "comentario_host": "Ni Nueva York, ni Ginebra, ni Washington. La Carta de la ONU se firmó en San Francisco al terminar la Segunda Guerra Mundial.", "explicacion_tecnica": "La Conferencia de las Naciones Unidas sobre Organización Internacional concluyó el 26 de junio de 1945 en el Veterans Memorial Building de San Francisco.", "fuentes": ["United Nations Archives", "Department of State Bulletin"]}, {"id": 7, "categoria": "Historia de España", "dificultad": "Elevada", "pregunta": "¿Qué militar y político español lideró el golpe de Estado de septiembre de 1923 que instauró una dictadura militar con el beneplácito del rey Alfonso XIII hasta enero de 1930?", "respuesta_correcta": "Miguel Primo de Rivera", "comentario_host": "Capitán general de Cataluña que disolvió las Cortes y suspendió la Constitución de 1876 con el visto bueno del monarca.", "explicacion_tecnica": "Su régimen se dividió en Directorio Militar (1923-1925) y Directorio Civil (1925-1930), dimitiendo en enero de 1930 tras perder el apoyo de los mandos militares.", "fuentes": ["Javier Tusell, 'La dictadura de Primo de Rivera'", "Congreso de los Diputados"]}, {"id": 8, "categoria": "Guerra Fría", "dificultad": "Elevada", "pregunta": "¿En qué año cayó el Muro de Berlín en la noche del 9 de noviembre tras el confuso anuncio de apertura de fronteras del portavoz Günter Schabowski?", "respuesta_correcta": "1989", "comentario_host": "Si habéis dudado con 1991, ese fue el año en que se disolvió la URSS. El muro se vino abajo en noviembre del 89.", "explicacion_tecnica": "Schabowski pronunció en rueda de prensa televisada en directo que la normativa entraba en vigor 'de inmediato, sin demora', provocando la avalancha hacia los puestos de control.", "fuentes": ["Bundesarchiv (Archivos Federales de Alemania)", "Wilson Center Cold War History"]}, {"id": 9, "categoria": "Política y Filosofía del Derecho", "dificultad": "Elevada", "pregunta": "¿Qué pensador y filósofo francés ilustrado formuló en 'El espíritu de las leyes' (1748) la doctrina clásica de la división tripartita de los poderes del Estado (ejecutivo, legislativo y judicial)?", "respuesta_correcta": "Montesquieu (Barón de Montesquieu)", "comentario_host": "La base de cualquier estado democrático moderno. Si habéis dicho Voltaire o Rousseau os falta un hervor en teoría política.", "explicacion_tecnica": "Charles Louis de Secondat, barón de Montesquieu, argumentó que 'para que no se pueda abusar del poder, es preciso que el poder detenga al poder'.", "fuentes": ["Stanford Encyclopedia of Philosophy", "Bibliothèque Nationale de France"]}, {"id": 10, "categoria": "Historia del Siglo XX", "dificultad": "Elevada", "pregunta": "¿Qué batalla de la Segunda Guerra Mundial librada entre agosto de 1942 y febrero de 1943 a orillas del río Volga es considerada la más sangrienta de la historia y el giro definitivo del Frente Oriental?", "respuesta_correcta": "Batalla de Stalingrado", "comentario_host": "El VI Ejército de Friedrich Paulus cercado y destruido en las ruinas industriales del Volga. Ahí empezó el fin del Tercer Reich.", "explicacion_tecnica": "La Operación Urano del Ejército Rojo cercó al VI Ejército alemán, saldándose con cerca de dos millones de bajas combinadas entre ambos bandos.", "fuentes": ["Antony Beevor, 'Stalingrado'", "Imperial War Museums"]}, {"id": 11, "categoria": "Historia de Francia", "dificultad": "Elevada", "pregunta": "¿Qué monarca de la dinastía Borbón reinó durante 72 años y 110 días, el reinado documentado más largo de la historia europea, haciéndose llamar 'el Rey Sol'?", "respuesta_correcta": "Luis XIV", "comentario_host": "'El Estado soy yo'. Levantó Versalles para tener a la nobleza entretenida bailando y peinándose mientras él controlaba Francia con puño de hierro.", "explicacion_tecnica": "Luis XIV subió al trono en 1643 con cuatro años y falleció en 1715, consolidando la cúspide del absolutismo monárquico en Europa.", "fuentes": ["Château de Versailles - Archives", "Encyclopedia Britannica"]}, {"id": 12, "categoria": "Historia del Reino Unido", "dificultad": "Elevada", "pregunta": "¿Qué rey inglés de la Casa de Tudor rompió con la Iglesia de Roma en 1534 mediante el Acta de Supremacía para anular su matrimonio con Catalina de Aragón y casarse con Ana Bolena?", "respuesta_correcta": "Enrique VIII", "comentario_host": "Seis esposas, dos de ellas decapitadas, y fundó la Iglesia anglicana simplemente para divorciarse a su antojo.", "explicacion_tecnica": "El Acta de Supremacía de 1534 declaró al monarca inglés como 'cabeza suprema en la Tierra de la Iglesia de Inglaterra', desatando la disolución de los monasterios.", "fuentes": ["The National Archives (UK)", "Oxford Dictionary of National Biography"]}, {"id": 13, "categoria": "Historia Colonial Americana", "dificultad": "Elevada", "pregunta": "¿Qué navegante y corsario inglés fue el primer capitán en completar una circunnavegación del globo al mando de su propia expedición a bordo del 'Golden Hind' entre 1577 y 1580?", "respuesta_correcta": "Francis Drake", "comentario_host": "Magallanes murió en Filipinas y la primera la completó Elcano en 1522, pero Drake fue el primer capitán en liderarla de principio a fin.", "explicacion_tecnica": "Financiado encubiertamente por Isabel I de Inglaterra, Drake saqueó puertos coloniales españoles en el Pacífico y regresó a Plymouth en septiembre de 1580.", "fuentes": ["Royal Museums Greenwich", "Hakluyt Society"]}, {"id": 14, "categoria": "Historia de Roma", "dificultad": "Elevada", "pregunta": "¿Qué general cartaginés fue derrotado por Publio Cornelio Escipión 'el Africano' en la llanura de Zama en el año 202 a.C., poniendo fin a la Segunda Guerra Púnica?", "respuesta_correcta": "Aníbal Barca", "comentario_host": "El terror de Roma durante dieciséis años invicto en Italia, hasta que Escipión le neutralizó los elefantes en el norte de África.", "explicacion_tecnica": "Escipión dispuso sus manípulos legionarios dejando calles abiertas para que los elefantes de carga cartagineses pasaran de largo sin romper las líneas romanas.", "fuentes": ["Polibio, Historias (Libro XV)", "Tito Livio, Ab Urbe Condita"]}, {"id": 15, "categoria": "Historia de los Estados Unidos", "dificultad": "Elevada", "pregunta": "¿Qué presidente estadounidense emitió en enero de 1863 la Proclamación de Emancipación en plena Guerra de Secesión y fue asesinado por John Wilkes Booth en el teatro Ford?", "respuesta_correcta": "Abraham Lincoln", "comentario_host": "El decimosexto presidente de EE.UU. y autor del célebre discurso de Gettysburg. Un gigante de la historia política occidental.", "explicacion_tecnica": "Asesinado el 14 de abril de 1865 apenas cinco días después de la rendición del general confederado Robert E. Lee en Appomattox.", "fuentes": ["Library of Congress", "National Archives and Records Administration"]}, {"id": 16, "categoria": "Geopolítica de Asia", "dificultad": "Elevada", "pregunta": "¿A lo largo de qué paralelo geográfico se acordó la división territorial de la península coreana en 1945, que posteriormente derivó en la zona desmilitarizada tras el armisticio de 1953?", "respuesta_correcta": "Paralelo 38 (Paralelo 38 Norte)", "comentario_host": "La frontera más fortificada y tensa del planeta desde hace setenta años. Si habéis dicho el paralelo 17, ese era el de Vietnam.", "explicacion_tecnica": "Fijado provisionalmente por EE.UU. y la URSS tras la rendición de Japón en agosto de 1945, fue ratificado con ajustes menores tras la Guerra de Corea en Panmunjom.", "fuentes": ["United States Military Academy History Department", "Wilson Center"]}, {"id": 17, "categoria": "Historia de España", "dificultad": "Elevada", "pregunta": "¿En qué ciudad francesa abdicaron forzosamente Fernando VII y Carlos IV en mayo de 1808, cediendo la corona española a Napoleón Bonaparte?", "respuesta_correcta": "Bayona (Abdicaciones de Bayona)", "comentario_host": "Napoleón los reunió como a primos y les quitó el trono en una tarde para ponérselo a su hermano José Bonaparte ('Pepe Botella').", "explicacion_tecnica": "Ocurridas entre el 5 y 6 de mayo de 1808 en el castillo de Marracq, tras el estallido del levantamiento del 2 de mayo en Madrid.", "fuentes": ["Archivo Histórico Nacional", "Real Academia de la Historia"]}, {"id": 18, "categoria": "Historia de la Unión Europea", "dificultad": "Elevada", "pregunta": "¿Qué tratado firmado en febrero de 1992 en una ciudad de los Países Bajos transformó formalmente la Comunidad Económica Europea en la Unión Europea y sentó las bases de la moneda única (el euro)?", "respuesta_correcta": "Tratado de Maastricht (Tratado de la Unión Europea)", "comentario_host": "El tratado fundacional de la UE que definió los tres pilares comunitarios y los criterios de convergencia económica.", "explicacion_tecnica": "Firmado el 7 de febrero de 1992 y entrado en vigor el 1 de noviembre de 1993, estableció la ciudadanía de la Unión Europea y el Sistema Europeo de Bancos Centrales.", "fuentes": ["Diario Oficial de la Unión Europea (DO C 191)", "Consejo Europeo"]}, {"id": 19, "categoria": "Cultura Geek - Fantasía", "dificultad": "Elevada", "pregunta": "En el legendarium de la Tierra Media creado por J.R.R. Tolkien, ¿cómo se llamaba la espada forjada en la Primera Edad que portaba Elendil, rota en trozos en la batalla contra Sauron y reforjada para Aragorn con el nombre de Andúril?", "respuesta_correcta": "Narsil", "comentario_host": "¡La espada que fue quebrada! Si habéis dicho Dardo o Glamdring es que no os habéis visto ni las películas extendidas, orcos de pacotilla.", "explicacion_tecnica": "Forjada por el enano Telchar de Nogrod en la Primera Edad, Narsil fue empuñada por Elendil e Isildur cortó el Anillo Único con su empuñadura rota.", "fuentes": ["J.R.R. Tolkien, 'El Señor de los Anillos' (La Comunidad del Anillo)", "The Silmarillion"]}, {"id": 20, "categoria": "Videojuegos de Culto", "dificultad": "Elevada", "pregunta": "¿Qué célebre diseñador de videojuegos japonés creó la saga 'The Legend of Zelda' y 'Super Mario Bros' para Nintendo en los años 80?", "respuesta_correcta": "Shigeru Miyamoto", "comentario_host": "El padre de media industria del videojuego. Como hayáis dicho Kojima o Sakurai es para quitaros la consola de por vida.", "explicacion_tecnica": "Shigeru Miyamoto ingresó en Nintendo en 1977 como artista gráfico y revolucionó el entretenimiento interactivo con Donkey Kong (1981), Super Mario Bros (1985) y The Legend of Zelda (1986).", "fuentes": ["Nintendo Corporate History", "The Game Makers: Shigeru Miyamoto (GDC)"]}, {"id": 21, "categoria": "Cultura Geek - Star Wars", "dificultad": "Elevada", "pregunta": "¿Qué maestro jedi, miembro del Alto Consejo, descubrió y comisionó al ejército de clones en el planeta Kamino antes de ser asesinado, haciéndose pasar por portavoz de la República?", "respuesta_correcta": "Sifo-Dyas", "comentario_host": "Lore fino de las Guerras Clon. No fue Yoda ni Windu. Sifo-Dyas predijo la guerra civil y encargó el ejército antes de que el conde Dooku lo traicionara.", "explicacion_tecnica": "Mencionado en 'El ataque de los clones' (Episodio II) y detallado en la serie canónica 'The Clone Wars' (Temporada 6).", "fuentes": ["Star Wars: The Clone Wars (Canonic Archives)", "Star Wars Databank"]}, {"id": 22, "categoria": "Videojuegos - Soulsborne", "dificultad": "Elevada", "pregunta": "¿Qué influyente director y presidente de FromSoftware es el creador de la saga 'Dark Souls', 'Bloodborne', 'Sekiro' y 'Elden Ring'?", "respuesta_correcta": "Hidetaka Miyazaki", "comentario_host": "El hombre que os ha hecho morir doscientas veces contra Malenia y Ornstein & Smough. Miyazaki, genio del sufrimiento digital.", "explicacion_tecnica": "Hidetaka Miyazaki debutó como director rescatando el proyecto Demon's Souls (2009), sentando las bases del género 'soulslike' caracterizado por narrativa ambiental y combate riguroso.", "fuentes": ["FromSoftware Official Records", "Edge Magazine Retrospective"]}, {"id": 23, "categoria": "Cultura Geek - Warhammer 40.000", "dificultad": "Elevada", "pregunta": "En el universo distópico de Warhammer 40k, ¿qué Señor de la Guerra y primarca favorito del Emperador traicionó a la Humanidad desatando la guerra civil fratricida que lleva su nombre?", "respuesta_correcta": "Horus (Horus Lupercal / La Herejía de Horus)", "comentario_host": "'Yo estaba allí el día en que Horus mató al Emperador'. Si no sabéis de Warhammer 40k es que no tenéis sangre en las venas, herejes.", "explicacion_tecnica": "Lupercal, comandante de los Lobos Lunares (luego Hijos de Horus), fue corrompido por los poderes ruinosos del Caos en Davin, culminando en el Asedio de Terra.", "fuentes": ["Black Library - The Horus Heresy Series", "Games Workshop Lore Archives"]}, {"id": 24, "categoria": "Cultura Geek - Ciencia Ficción", "dificultad": "Elevada", "pregunta": "En la monumental saga 'Dune' de Frank Herbert, ¿cómo se llama el planeta desértico (también conocido por su nombre nativo) donde se extrae la codiciada especia melange?", "respuesta_correcta": "Arrakis (o Dune)", "comentario_host": "El planeta de los gusanos de arena Shai-Hulud y de los Fremen. El que controla la especia controla el universo.", "explicacion_tecnica": "Arrakis es el tercer planeta del sistema estelar Canopus y la única fuente natural en el universo conocido de la especia melange, esencial para los navegantes de la Cofradía Espacial.", "fuentes": ["Frank Herbert, 'Dune' (1965)", "The Dune Encyclopedia"]}, {"id": 25, "categoria": "Anime y Manga Clásico", "dificultad": "Elevada", "pregunta": "¿Qué mangaka japonés es el creador de la universal franquicia 'Dragon Ball' y del diseño de personajes de la saga de videojuegos 'Dragon Quest' y 'Chrono Trigger'?", "respuesta_correcta": "Akira Toriyama", "comentario_host": "Una leyenda que nos acompañó a todos de críos. El creador de Goku y el maestro del dibujo de acción cinético.", "explicacion_tecnica": "Akira Toriyama (1955-2024) serializó Dragon Ball en la revista Weekly Shōnen Jump entre 1984 y 1995, con más de 260 millones de copias vendidas mundialmente.", "fuentes": ["Shueisha Official Archives", "Toei Animation"]}, {"id": 26, "categoria": "Videojuegos - Historia", "dificultad": "Elevada", "pregunta": "¿Qué programador ruso diseñó e implementó en 1984 en un ordenador soviético Elektronika 60 el mítico juego de puzles de bloques geométricos 'Tetris'?", "respuesta_correcta": "Alekséi Pázhitnov (Alexey Pajitnov)", "comentario_host": "El juego más vendido y versionado de la historia, inventado en la Academia de Ciencias de la URSS durante la Guerra Fría.", "explicacion_tecnica": "Pázhitnov se inspiró en el juego de mesa pentaminó; los derechos comerciales internacionales desataron una célebre batalla legal que culminó con el lanzamiento masivo en la Game Boy de Nintendo en 1989.", "fuentes": ["The Tetris Company", "Box, 'Tetris: The Games People Play'"]}, {"id": 27, "categoria": "Cómics y Superhéroes", "dificultad": "Elevada", "pregunta": "¿Qué guionista británico revolucionó el cómic moderno en los años 80 escribiendo obras maestras de la talla de 'Watchmen', 'V de Vendetta' y 'Batman: The Killing Joke'?", "respuesta_correcta": "Alan Moore", "comentario_host": "El mago barbudo de Northampton. Desprecia las adaptaciones de Hollywood de sus cómics pero escribió las mejores viñetas del siglo XX.", "explicacion_tecnica": "Alan Moore deconstruyó el mito del superhéroe con Dave Gibbons en Watchmen (1986-1987), la única novela gráfica que figura en la lista de las 100 mejores novelas de la revista Time.", "fuentes": ["DC Comics Archives", "Eisner Awards Historical Record"]}, {"id": 28, "categoria": "Cultura Geek - Cyberpunk", "dificultad": "Elevada", "pregunta": "¿Qué autor estadounidense-canadiense acuñó el término 'ciberespacio' y definió el subgénero cyberpunk con su novela de culto de 1984 'Neuromante' (Neuromancer)?", "respuesta_correcta": "William Gibson", "comentario_host": "Case conectándose a la matriz en la ciudad de Chiba. Si habéis dicho Matrix o Philip K. Dick, recordad que las Wachowski le copiaron medio libro a Gibson.", "explicacion_tecnica": "Neuromante fue la primera novela en ganar la 'triple corona' de la ciencia ficción (Premios Hugo, Nébula y Philip K. Dick) en el mismo año.", "fuentes": ["Science Fiction and Fantasy Writers of America (SFWA)", "Hugo Awards Archive"]}, {"id": 29, "categoria": "Videojuegos - RPG", "dificultad": "Elevada", "pregunta": "¿Qué estudio polaco de videojuegos desarrolló la aclamada trilogía de rol de 'The Witcher' y el título 'Cyberpunk 2077'?", "respuesta_correcta": "CD Projekt RED", "comentario_host": "Geralt de Rivia repartiendo mandobles y buscando a Ciri. El estudio de Varsovia que adaptó las novelas de Andrzej Sapkowski.", "explicacion_tecnica": "Fundado en 2002 como división de desarrollo de CD Projekt, consagraron su estatus mundial con 'The Witcher 3: Wild Hunt' (2015), uno de los títulos más galardonados de la historia.", "fuentes": ["CD Projekt Group Financial & Historical Reports", "The Game Awards"]}, {"id": 30, "categoria": "Cultura Geek - Cine", "dificultad": "Elevada", "pregunta": "¿Cómo se llama la inteligencia artificial militar de la saga 'Terminator' que adquiere autoconciencia el 29 de agosto de 1997 y desata el holocausto nuclear contra la humanidad?", "respuesta_correcta": "Skynet", "comentario_host": "A ver si os acordáis del Juicio Final de James Cameron. Ni ChatGPT ni Siri: Skynet con los T-800.", "explicacion_tecnica": "Creada por Cyberdyne Systems bajo la dirección de Miles Dyson, Skynet toma el control del arsenal nuclear de EE.UU. en la mitología de 'Terminator 2: Judgment Day'.", "fuentes": ["British Film Institute Archive", "Orion Pictures Production Notes"]}, {"id": 31, "categoria": "Videojuegos - FPS", "dificultad": "Elevada", "pregunta": "¿Qué compañía fundada por John Carmack y John Romero revolucionó el género de disparos en primera persona en los 90 lanzando 'Wolfenstein 3D', 'DOOM' y 'Quake'?", "respuesta_correcta": "id Software", "comentario_host": "Carmack programando motores gráficos 3D en C y Romero con melena diseñando niveles satánicos. Padres del deathmatch multijugador.", "explicacion_tecnica": "id Software inventó técnicas pioneiras de renderizado como el raycasting (Wolfenstein 3D) y los árboles de partición binaria espacial (BSP) en DOOM (1993) y Quake (1996).", "fuentes": ["Masters of Doom (David Kushner)", "Game Developers Conference Hall of Fame"]}, {"id": 32, "categoria": "Anime de Culto", "dificultad": "Elevada", "pregunta": "¿Qué mecha bio-mecánico gigante pilota el atormentado adolescente Shinji Ikari en la obra cumbre del anime psicológico 'Neon Genesis Evangelion' de Hideaki Anno?", "respuesta_correcta": "EVA-01 (Evangelion Unidad 01)", "comentario_host": "'¡Súbete al maldito robot, Shinji!'. Morado y verde neón con el alma de su madre dentro. Obra maestra de Gainax en 1995.", "explicacion_tecnica": "El EVA-01 fue clonado a partir de la carne de Lilith (el segundo Ángel) y contiene el alma transferida de Yui Ikari tras el experimento de sincronización de 2004.", "fuentes": ["Studio Gainax Official Data", "Japan Media Arts Festival"]}, {"id": 33, "categoria": "Videojuegos - Valve", "dificultad": "Elevada", "pregunta": "¿Cómo se llama el científico y físico teórico con gafas y perilla que protagoniza la saga de videojuegos 'Half-Life', armado con su icónica palanca de hierro?", "respuesta_correcta": "Gordon Freeman", "comentario_host": "No dice una sola palabra en toda la saga pero es el hombre libre que derrotó al Imperio Combine en Ciudad 17. Gordon Freeman.", "explicacion_tecnica": "Graduado con doctorado en física por el MIT, Freeman trabaja en el Centro de Investigación de Black Mesa cuando se produce la cascada de resonancia del Incidente de 1998.", "fuentes": ["Valve Corporation Archives", "Half-Life 2 Prima Official Game Guide"]}, {"id": 34, "categoria": "Cultura Geek - Star Wars", "dificultad": "Elevada", "pregunta": "¿Qué cazarrecompensas mandaloriano clonado sin alteraciones genéticas sirvió como 'hijo' y legado de Jango Fett, cayendo en el pozo del Sarlacc en el desierto de Tatooine?", "respuesta_correcta": "Boba Fett", "comentario_host": "Armadura abollada de beskar, lanzallamas y la nave Slave I. Si habéis dicho Din Djarin (Mando), ese es de la serie moderna, catetos.", "explicacion_tecnica": "Introducido canónicamente en 'El Imperio contraataca' (1980) tras debutar en el infame Star Wars Holiday Special de 1978.", "fuentes": ["Star Wars Databank", "Lucasfilm Archive"]}, {"id": 35, "categoria": "Videojuegos - Nintendo", "dificultad": "Elevada", "pregunta": "¿En qué consola doméstica de sobremesa lanzada por Nintendo en 1996 debutó la entrega revolucionaria 'The Legend of Zelda: Ocarina of Time'?", "respuesta_correcta": "Nintendo 64 (N64)", "comentario_host": "Cartucho de 256 megabits que redefinió para siempre el movimiento de cámara en entornos 3D con el 'Z-targeting'.", "explicacion_tecnica": "Lanzado en noviembre de 1998, 'Ocarina of Time' ostenta la puntuación media crítica más alta de la historia de los videojuegos en agregadores como Metacritic (99/100).", "fuentes": ["Metacritic All-Time Rankings", "Nintendo History"]}, {"id": 36, "categoria": "Cultura Geek - Cómic", "dificultad": "Elevada", "pregunta": "En el universo Marvel, ¿cuál es el metal ficticio casi indestructible originario de Wakanda que absorbe vibraciones cinéticas y con el que está forjado el escudo del Capitán América?", "respuesta_correcta": "Vibranium", "comentario_host": "No me digáis Adamantium, que ese es el de las garras de Lobezno. En Wakanda extraen Vibranium del meteorito sagrado.", "explicacion_tecnica": "Introducido por Stan Lee y Jack Kirby en 'Fantastic Four' #53 (1966), el Vibranium absorbe toda energía cinética incidente, haciéndolo prácticamente inmune a impactos balísticos.", "fuentes": ["Marvel Official Handbook", "Marvel Database"]}, {"id": 37, "categoria": "Videojuegos - Sony PlayStation", "dificultad": "Elevada", "pregunta": "¿Qué protagonista espartano, hijo semidiós de Zeus y conocido como el 'Fantasma de Esparta', clama venganza contra los dioses del Olimpo en la saga 'God of War'?", "respuesta_correcta": "Kratos", "comentario_host": "Piel cenicienta por las cenizas de su propia familia y las Espadas del Caos encadenadas a los brazos. Kratos, antes de irse al norte a educar a Atreus.", "explicacion_tecnica": "Creado por David Jaffe para Sony Santa Monica Studio en 2005 para PlayStation 2, y reconcebido en la mitología nórdica por Cory Barlog en 2018.", "fuentes": ["Sony Interactive Entertainment", "Santa Monica Studio"]}, {"id": 38, "categoria": "Cultura Geek - Fantasía", "dificultad": "Elevada", "pregunta": "En la saga 'Canción de Hielo y Fuego' de George R.R. Martin, ¿cómo se llama la espada ancestral de acero valyrio de la Casa Stark, empuñada por Ned Stark antes de ser decapitado con ella?", "respuesta_correcta": "Hielo (Ice)", "comentario_host": "Luego Tywin Lannister la fundió para sacar dos espadas: Guardajuramentos y Lamento de Viuda. Cultura de Poniente básica.", "explicacion_tecnica": "Un mandoble a dos manos forjado con acero valyrio en la antigua Valyria unos cuatrocientos años antes de la Guerra de los Cinco Reyes.", "fuentes": ["George R.R. Martin, 'A Game of Thrones'", "The World of Ice & Fire"]}, {"id": 39, "categoria": "Videojuegos - Estrategia", "dificultad": "Elevada", "pregunta": "¿Qué raza alienígena insectoide y biológica, gobernada por la mente colmena del 'Supercerebro' (Overmind), combate contra los Terran y Protoss en la saga de estrategia 'StarCraft' de Blizzard?", "respuesta_correcta": "Los Zerg", "comentario_host": "'¡Rush de zergling al minuto 3!'. La pesadilla de las salas de LAN de cibercafé de los años 2000. Los Zerg de Blizzard.", "explicacion_tecnica": "Lanzado en 1998, StarCraft se convirtió en deporte nacional en Corea del Sur y piedra angular de los deportes electrónicos modernos.", "fuentes": ["Blizzard Entertainment History", "StarCraft Compendium"]}, {"id": 40, "categoria": "Cultura Geek - Manga", "dificultad": "Elevada", "pregunta": "En el manga 'Death Note' de Tsugumi Ohba y Takeshi Obata, ¿qué manjar terrenal adora consumir de forma compulsiva el shinigami Ryuk para calmar su síndrome de abstinencia?", "respuesta_correcta": "Las manzanas", "comentario_host": "'Para los shinigamis, las manzanas son como el tabaco o el alcohol para los humanos'. Si no habéis visto Death Note no sabéis lo que es un duelo de intelectos entre Light Yagami y L.", "explicacion_tecnica": "Ryuk afirma en el manga que las manzanas del Mundo Humano son jugosas en contraste con las secas y podridas del Mundo de los Dioses de la Muerte.", "fuentes": ["Shōnen Jump Archives", "Death Note 13: How to Read"]}, {"id": 41, "categoria": "Física de Partículas", "dificultad": "Elevada", "pregunta": "¿Cómo se denominan los componentes elementales de espín 1/2 que, agrupados en tripletes o pares con antiquarks, componen los hadrones como el protón y el neutrón?", "respuesta_correcta": "Quarks", "comentario_host": "Arriba, abajo, encanto, extraño, cima y fondo. Propuestos por Murray Gell-Mann tomando el nombre de una novela de James Joyce.", "explicacion_tecnica": "Murray Gell-Mann y George Zweig postularon en 1964 el modelo de quarks; los protones están compuestos por dos quarks 'up' y uno 'down' (uud).", "fuentes": ["Particle Data Group (PDG)", "Nobel Prize in Physics 1969"]}, {"id": 42, "categoria": "Astronomía del Sistema Solar", "dificultad": "Elevada", "pregunta": "¿Cuál es el volcán en escudo y montaña más alta conocida en cualquier planeta del Sistema Solar, situado en la región de Tharsis en Marte con más de 21 kilómetros de altitud?", "respuesta_correcta": "Monte Olimpo (Olympus Mons)", "comentario_host": "Casi tres veces más alto que el Everest y tan ancho como toda la península ibérica. Enorme volcán marciano.", "explicacion_tecnica": "Olympus Mons alcanza 21,9 km de altura sobre el datum de Marte y 600 km de diámetro en su base, formado por coladas basálticas estacionarias debido a la ausencia de placas tectónicas.", "fuentes": ["NASA Mars Exploration Program", "ESA Mars Express Mission"]}, {"id": 43, "categoria": "Física Termodinámica", "dificultad": "Elevada", "pregunta": "¿Qué valor de temperatura en la escala Celsius corresponde teóricamente al cero absoluto (0 Kelvin), punto donde cesa todo movimiento térmico clásico de las partículas?", "respuesta_correcta": "-273,15 °C (o -273 °C)", "comentario_host": "El límite inferior absoluto del termómetro universal. Más frío que el corazón de vuestras exes.", "explicacion_tecnica": "Por acuerdo del Sistema Internacional de Unidades (SI), el cero absoluto de la escala termodinámica equivale a exactamente -273,15 °C.", "fuentes": ["BIPM - SI Brochure", "National Institute of Standards and Technology (NIST)"]}, {"id": 44, "categoria": "Química Orgánica", "dificultad": "Elevada", "pregunta": "¿Qué científico alemán dedujo en 1865 la estructura cíclica hexagonal con enlaces resonantes de la molécula de benceno tras soñar con una serpiente mordiéndose la cola (uróboros)?", "respuesta_correcta": "August Kekulé (Friedrich August Kekulé)", "comentario_host": "Un sueño mítico que abrió las puertas de la química orgánica moderna: el anillo de benceno.", "explicacion_tecnica": "Kekulé propuso que los seis átomos de carbono del benceno (C6H6) forman un anillo cerrado con alternancia de enlaces simples y dobles en constante oscilación.", "fuentes": ["Royal Society of Chemistry", "Journal of Chemical Education"]}, {"id": 45, "categoria": "Astronomía Cosmológica", "dificultad": "Elevada", "pregunta": "¿Qué radiación electromagnética de microondas, fósil térmico del Big Bang con una temperatura residual de 2,7 Kelvin descubierta en 1965 por Penzias y Wilson, permea homogéneamente todo el universo observable?", "respuesta_correcta": "Fondo Cósmico de Microondas (CMB)", "comentario_host": "El eco del nacimiento del cosmos emitido 380.000 años tras el Big Bang cuando los fotones se desacoplaron de la materia.", "explicacion_tecnica": "El Cosmic Microwave Background (CMB) fue detectado con la antena de cuerno de Holmdel por Arno Penzias y Robert Wilson (Premio Nobel 1978), confirmando el modelo del Big Bang frente al estado estacionario.", "fuentes": ["NASA Goddard Space Flight Center (COBE & WMAP)", "ESA Planck Mission"]}, {"id": 46, "categoria": "Química y Materiales", "dificultad": "Elevada", "pregunta": "¿Cómo se denomina el alótropo del carbono bidimensional compuesto por una monocapa de átomos con hibridación sp2 dispuestos en una red hexagonal tipo panal de abeja, aislado en 2004 por Andréy Gueim y Konstantín Novosiólov?", "respuesta_correcta": "Grafeno", "comentario_host": "Doscientas veces más resistente que el acero, mejor conductor que el cobre y de un solo átomo de grosor. Y lo sacaron despegando cinta adhesiva de una mina de lápiz.", "explicacion_tecnica": "Geim y Novoselov utilizaron exfoliación micromecánica con cinta adhesiva sobre grafito en la Universidad de Manchester, obteniendo el Premio Nobel de Física en 2010.", "fuentes": ["Nobel Prize in Physics 2010", "Science (Vol. 306, 2004)"]}, {"id": 47, "categoria": "Física de la Relatividad", "dificultad": "Elevada", "pregunta": "¿En qué año publicó Albert Einstein su célebre cuarteto de artículos del 'Annus Mirabilis' en Annalen der Physik, que incluían la relatividad especial y el efecto fotoeléctrico?", "respuesta_correcta": "1905", "comentario_host": "Trabajaba de empleado de tercera clase en la oficina de patentes de Berna y en un solo año cambió la física para siempre.", "explicacion_tecnica": "En 1905 publicó sobre el efecto fotoeléctrico (por el que ganó el Nobel en 1921), el movimiento browniano, la relatividad especial y la equivalencia masa-energía (E=mc²).", "fuentes": ["Max Planck Institute for the History of Science", "Annalen der Physik Archive"]}, {"id": 48, "categoria": "Astrobiología y Geología Lunar", "dificultad": "Elevada", "pregunta": "¿En qué llanura basáltica de la Luna alunizó el módulo lunar 'Eagle' de la misión Apolo 11 el 20 de julio de 1969?", "respuesta_correcta": "Mar de la Tranquilidad (Mare Tranquillitatis)", "comentario_host": "'Houston, aquí base Tranquilidad. El Águila ha alunizado'. Armstrong y Aldrin pisando el polvo lunar.", "explicacion_tecnica": "El Mare Tranquillitatis es una cuenca de impacto rellenada por basaltos oscuros ricos en ilmenita (titanio), elegida por la NASA por su topografía relativamente llana y segura.", "fuentes": ["NASA Apollo 11 Mission Report", "Smithsonian National Air and Space Museum"]}, {"id": 49, "categoria": "Física Óptica", "dificultad": "Elevada", "pregunta": "¿Cómo se denomina el fenómeno ondulatorio por el cual una onda cambia de dirección y velocidad de propagación al pasar de un medio material a otro con diferente índice de refracción?", "respuesta_correcta": "Refracción", "comentario_host": "Por eso una cuchara parece torcida dentro de un vaso de agua. Ley de Snell en estado puro.", "explicacion_tecnica": "La refracción obedece a la ley de Snell: n1 * sin(theta1) = n2 * sin(theta2), donde n representa el índice de refracción relativo de cada medio.", "fuentes": ["Hecht, 'Optics' (5th Edition)", "Feynman Lectures on Physics"]}, {"id": 50, "categoria": "Química de Gases", "dificultad": "Elevada", "pregunta": "¿Cuál es el gas noble más ligero y con el punto de ebullición más bajo de todos los elementos químicos (-268,93 °C), incapaz de solidificar a presión atmosférica estándar incluso en el cero absoluto?", "respuesta_correcta": "Helio (He)", "comentario_host": "Con el que hincháis los globos para poner voz de pito. Segundo elemento más abundante del universo tras el hidrógeno.", "explicacion_tecnica": "El helio requiere una presión mínima de 25 atmósferas a temperaturas criogénicas para pasar a fase sólida debido a las fluctuaciones cuánticas del punto cero.", "fuentes": ["IUPAC Gold Book", "Keesom, 'Helium'"]}, {"id": 51, "categoria": "Astronomía de Agujeros Negros", "dificultad": "Elevada", "pregunta": "¿Cómo se denomina la frontera teórica del espacio-tiempo que rodea a un agujero negro a partir de la cual ninguna partícula ni radiación luminosa puede escapar de su atracción gravitatoria?", "respuesta_correcta": "Horizonte de sucesos (o de eventos)", "comentario_host": "El punto de no retorno cósmico. Lo que cruza el horizonte de sucesos no vuelve a salir jamás.", "explicacion_tecnica": "En un agujero negro estático de Schwarzschild, el radio del horizonte de eventos viene dado por r_s = 2GM/c².", "fuentes": ["Stephen Hawking, 'A Brief History of Time'", "Gravitation (Misner, Thorne & Wheeler)"]}, {"id": 52, "categoria": "Química Ácido-Base", "dificultad": "Elevada", "pregunta": "¿Qué químico danés introdujo en 1909 en los laboratorios de la cervecería Carlsberg la escala matemática logarítmica de potencial de hidrógeno conocida universalmente como pH?", "respuesta_correcta": "Søren Sørensen (S.P.L. Sørensen)", "comentario_host": "Buscaba controlar la calidad del fermentado de la cerveza danesa y acabó inventando la escala de pH que estudian todos los niños del planeta.", "explicacion_tecnica": "Sørensen definió el pH como el logaritmo negativo en base 10 de la concentración de iones hidrógeno: pH = -log10[H+].", "fuentes": ["Carlsberg Research Laboratory Archives", "Chemical & Engineering News"]}, {"id": 53, "categoria": "Electromagnetismo", "dificultad": "Elevada", "pregunta": "¿Qué físico y matemático escocés del siglo XIX unificó la electricidad, el magnetismo y la óptica en un conjunto de cuatro ecuaciones diferenciales fundamentales?", "respuesta_correcta": "James Clerk Maxwell", "comentario_host": "Las cuatro ecuaciones de Maxwell: la luz es una onda electromagnética. Sin él no tendríais ni Wi-Fi ni móviles.", "explicacion_tecnica": "Publicadas en 'A Dynamical Theory of the Electromagnetic Field' (1865), integraron las leyes de Gauss, Faraday y Ampère-Maxwell.", "fuentes": ["The Royal Society of Edinburgh", "Feynman Lectures on Physics"]}, {"id": 54, "categoria": "Geología y Sismología", "dificultad": "Elevada", "pregunta": "¿Cómo se denomina la discontinuidad sísmica que marca el límite geológico entre la corteza terrestre y el manto superior de la Tierra?", "respuesta_correcta": "Discontinuidad de Mohorovičić (o Moho)", "comentario_host": "Descubierta en 1909 analizando las ondas sísmicas de un terremoto en Croacia. Si habéis dicho Gutenberg, esa separa el manto del núcleo.", "explicacion_tecnica": "Andrija Mohorovičić detectó que las ondas sísmicas P y S aceleraban bruscamente al pasar a un medio de mayor densidad peridotítica bajo la corteza.", "fuentes": ["USGS Earthquake Hazards Program", "Tarbuck & Lutgens, 'Ciencias de la Tierra'"]}, {"id": 55, "categoria": "Química Nuclear", "dificultad": "Elevada", "pregunta": "¿Qué elemento químico de número atómico 92 y símbolo U fue el combustible fisible empleado en la primera detonación atómica bélica de la historia sobre Hiroshima?", "respuesta_correcta": "Uranio (específicamente Uranio-235)", "comentario_host": "Bomba 'Little Boy' detonada el 6 de agosto de 1945. La de Nagasaki ('Fat Man') usó plutonio-239.", "explicacion_tecnica": "El artefacto empleó un mecanismo de disparo tipo cañón para unir dos masas subcríticas de uranio enriquecido al 80% en el isótopo 235.", "fuentes": ["Los Alamos National Laboratory Archives", "Smithsonian National Museum of Nuclear Science"]}, {"id": 56, "categoria": "Astrofísica de Supernovas", "dificultad": "Elevada", "pregunta": "¿Qué límite de masa estelar, equivalente a unas 1,44 masas solares y calculado por un físico indio en 1930, determina la masa máxima que puede soportar una enana blanca antes de colapsar?", "respuesta_correcta": "Límite de Chandrasekhar", "comentario_host": "Subrahmanyan Chandrasekhar calculó que por encima de 1,4 masas solares la presión de degeneración de electrones no puede frenar la gravedad.", "explicacion_tecnica": "Galardonado con el Premio Nobel de Física en 1983, Chandrasekhar combinó relatividad especial con mecánica cuántica cuántica en su viaje en barco hacia Inglaterra a los 19 años.", "fuentes": ["Nobel Prize in Physics 1983", "Astrophysical Journal (1931)"]}, {"id": 57, "categoria": "Química de la Atmósfera", "dificultad": "Elevada", "pregunta": "¿Qué molécula triatómica de gas azulado ($O_3$) absorbe entre el 97% y el 99% de la radiación ultravioleta de alta frecuencia en la estratosfera terrestre?", "respuesta_correcta": "Ozono", "comentario_host": "El escudo natural contra los rayos UV. Por suerte cerramos el agujero prohibiendo los CFCs con el Protocolo de Montreal.", "explicacion_tecnica": "El ciclo de Chapman describe cómo la fotólisis del oxígeno molecular por radiación UV solar regenera y descompone continuamente el ozono estratosférico.", "fuentes": ["WMO Ozone Secretariat", "NOAA Chemical Sciences Laboratory"]}, {"id": 58, "categoria": "Mecánica Clásica", "dificultad": "Elevada", "pregunta": "¿Cómo se denomina la aceleración aparente que experimenta un cuerpo en movimiento relativo dentro de un sistema de referencia en rotación, responsable del sentido de giro de los ciclones en la Tierra?", "respuesta_correcta": "Efecto Coriolis (o Fuerza / Aceleración de Coriolis)", "comentario_host": "Gaspard-Gustave de Coriolis en 1835. Desvía los vientos a la derecha en el hemisferio norte y a la izquierda en el hemisferio sur.", "explicacion_tecnica": "La fuerza ficticia viene dada por F_cor = -2m * (omega x v), perpendicular al vector velocidad del cuerpo y al eje de rotación del sistema.", "fuentes": ["Holton, 'An Introduction to Dynamic Meteorology'", "Britannica"]}, {"id": 59, "categoria": "Biología Celular", "dificultad": "Elevada", "pregunta": "¿Cómo se denomina el orgánulo celular de doble membrana considerado la 'central energética' de las células eucariotas donde se produce la mayor parte del ATP mediante la fosforilación oxidativa?", "respuesta_correcta": "Mitocondria", "comentario_host": "Descendiente de una bacteria engullida por endosimbiosis hace miles de millones de años. Si habéis dicho ribosoma os falta azúcar en sangre.", "explicacion_tecnica": "La teoría endosimbiótica de Lynn Margulis explica el origen bacteriano de las mitocondrias, que conservan su propio genoma circular de herencia materna.", "fuentes": ["Alberts, 'Molecular Biology of the Cell'", "Margulis, 'Origin of Eukaryotic Cells'"]}, {"id": 60, "categoria": "Neuroanatomía", "dificultad": "Elevada", "pregunta": "¿Qué estructura del diencéfalo cerebral, situada debajo del tálamo, actúa como centro maestro de control del sistema nervioso autónomo y regula la temperatura corporal, el hambre y la hipófisis?", "respuesta_correcta": "Hipotálamo", "comentario_host": "El termostato y centro de mandos de vuestras hormonas y vuestras bajonas. Hipotálamo.", "explicacion_tecnica": "El hipotálamo conecta el sistema nervioso con el endocrino mediante el eje hipotálamo-hipofisario, secretando factores liberadores (GnRH, TRH, CRH).", "fuentes": ["Kandel, 'Principles of Neural Science'", "Gray's Anatomy"]}, {"id": 61, "categoria": "Inmunología", "dificultad": "Elevada", "pregunta": "¿Qué médico británico realizó en 1796 la primera inoculación experimental contra la viruela utilizando fluido de pústulas de viruela bovina en el niño James Phipps, sentando las bases de las vacunas?", "respuesta_correcta": "Edward Jenner", "comentario_host": "Por eso se llaman 'vacunas', porque venían de las vacas y de las granjeras de ordeño que no se contagiaban de viruela humana.", "explicacion_tecnica": "Jenner demostró la inmunidad cruzada inducida por el virus vaccinia (cowpox) frente al letal variola virus humano, erradicado oficialmente por la OMS en 1980.", "fuentes": ["World Health Organization (WHO Smallpox Eradication)", "The Royal Society"]}, {"id": 62, "categoria": "Fisiología Circulatoria", "dificultad": "Elevada", "pregunta": "¿Qué proteína globular cuaternaria rica en hierro, presente en los eritrocitos, es la encargada del transporte de oxígeno molecular desde los pulmones a los tejidos periféricos?", "respuesta_correcta": "Hemoglobina", "comentario_host": "La que le da el color rojo a la sangre gracias a sus cuatro grupos hemo con átomos de hierro.", "explicacion_tecnica": "Max Perutz descifró en 1959 la estructura cristalográfica de la hemoglobina, que presenta una curva de unión sigmoidea al oxígeno debido a la cooperatividad alostérica.", "fuentes": ["Perutz, Nature (1960)", "Nobel Prize in Chemistry 1962"]}, {"id": 63, "categoria": "Anatomía del Esqueleto", "dificultad": "Elevada", "pregunta": "¿Cuál es el hueso más largo, denso y resistente del esqueleto humano, situado en el muslo entre la articulación de la cadera y la rodilla?", "respuesta_correcta": "Fémur", "comentario_host": "Soporta hasta treinta veces el peso del cuerpo de un adulto al saltar. Si habéis dicho la tibia, casi.", "explicacion_tecnica": "En un adulto medio mide aproximadamente el 26% de la estatura total y su cabeza se articula en el acetábulo del hueso coxal.", "fuentes": ["Gray's Anatomy (42nd Edition)", "American Academy of Orthopaedic Surgeons"]}, {"id": 64, "categoria": "Farmacología y Microbiología", "dificultad": "Elevada", "pregunta": "¿Qué médico y microbiólogo escocés descubrió en septiembre de 1928 las propiedades bactericidas del hongo 'Penicillium notatum' al contaminarse accidentalmente una placa de estafilococos en el St Mary's Hospital?", "respuesta_correcta": "Alexander Fleming", "comentario_host": "Se fue de vacaciones y dejó las placas de cultivo sin fregar en el fregadero. El hongo creció y mató a las bacterias: nació la penicilina.", "explicacion_tecnica": "Fleming compartió el Premio Nobel de Medicina en 1945 con Howard Florey y Ernst Boris Chain, quienes lograron purificar y producir la penicilina en masa durante la Segunda Guerra Mundial.", "fuentes": ["Nobel Prize in Physiology or Medicine 1945", "British Journal of Experimental Pathology (1929)"]}, {"id": 65, "categoria": "Genética Clásica", "dificultad": "Elevada", "pregunta": "¿Qué fraile agustino y botánico austríaco descubrió las leyes fundamentales de la herencia genética realizando cruces sistemáticos con plantas de guisante ('Pisum sativum') en el jardín de su abadía en Brno?", "respuesta_correcta": "Gregor Mendel", "comentario_host": "Leyes de la segregación y de la transmisión independiente. El padre indiscutible de la genética moderna.", "explicacion_tecnica": "Mendel presentó sus 'Experimentos sobre hibridación de plantas' en 1865 ante la Sociedad de Historia Natural de Brno, aunque su obra permaneció ignorada hasta su redescubrimiento en 1900.", "fuentes": ["Verhandlungen des naturforschenden Vereines in Brünn (1866)", "Stanford Encyclopedia of Philosophy"]}, {"id": 66, "categoria": "Sistema Endocrino", "dificultad": "Elevada", "pregunta": "¿Qué hormona peptídica secretada por las células beta de los islotes de Langerhans en el páncreas facilita la absorción y almacenamiento de glucosa en el hígado y tejido muscular?", "respuesta_correcta": "Insulina", "comentario_host": "La llave que abre las células para que entre la glucosa de la sangre. Banting y Best la aislaron en 1921.", "explicacion_tecnica": "La deficiencia absoluta o resistencia periférica a la acción de la insulina es la causa fisiopatológica de la diabetes mellitus tipo 1 y 2 respectivamente.", "fuentes": ["The Discovery of Insulin (Michael Bliss)", "American Diabetes Association"]}, {"id": 67, "categoria": "Evolución Biológica", "dificultad": "Elevada", "pregunta": "¿En qué archipiélago volcánico del océano Pacífico ecuatorial, perteneciente a Ecuador, realizó Charles Darwin en 1835 observaciones clave sobre pinzones y tortugas que inspiraron su teoría de la selección natural?", "respuesta_correcta": "Islas Galápagos", "comentario_host": "Durante la expedición del HMS Beagle capitaneado por Robert FitzRoy. Cuna de la biología evolutiva.", "explicacion_tecnica": "Darwin observó la radiación adaptativa en la morfología del pico de los pinzones según la disponibilidad trófica de cada isla del archipiélago.", "fuentes": ["Charles Darwin, 'The Voyage of the Beagle' (1839)", "UNESCO World Heritage Centre"]}, {"id": 68, "categoria": "Virología", "dificultad": "Elevada", "pregunta": "¿Qué tipo de material genético ácido nucleico contiene en su interior el virus de la inmunodeficiencia humana (VIH) antes de que la enzima transcriptasa inversa lo convierta en ADN proviral?", "respuesta_correcta": "ARN (Ácido Ribonucleico)", "comentario_host": "Es un retrovirus de ARN monocatenario de polaridad positiva. Por eso muta tan rápido y se inserta en el genoma de los linfocitos T CD4.", "explicacion_tecnica": "El virión del VIH contiene dos copias idénticas de ARN monocatenario acompañadas de enzimas virales (transcriptasa inversa, integrasa y proteasa).", "fuentes": ["National Institute of Allergy and Infectious Diseases (NIAID)", "Fields Virology"]}, {"id": 69, "categoria": "Geografía de África", "dificultad": "Elevada", "pregunta": "¿Cuál es la montaña y volcán más alto de todo el continente africano, situado en el noreste de Tanzania con 5.895 metros de altitud en su pico Uhuru?", "respuesta_correcta": "Kilimanjaro", "comentario_host": "Estratovolcán con cumbres nevadas en mitad de la sabana ecuatorial africana. Si habéis dicho el monte Kenia, os habéis quedado cortos de metros.", "explicacion_tecnica": "El Kilimanjaro está formado por tres conos volcánicos: Kibo (el más elevado), Mawenzi y Shira, declarado Parque Nacional y Patrimonio de la Humanidad.", "fuentes": ["Tanzania National Parks (TANAPA)", "UNESCO World Heritage Centre"]}, {"id": 70, "categoria": "Geografía Asiática", "dificultad": "Elevada", "pregunta": "¿Qué mar interior endorreico situado entre Kazajistán y Uzbekistán perdió más del 90% de su volumen original en la segunda mitad del siglo XX debido al desvío soviético de los ríos Amu Daria y Sir Daria?", "respuesta_correcta": "Mar de Aral", "comentario_host": "Barcos pesqueros oxidados abandonados en mitad de un desierto de arena y sal. Uno de los mayores desastres ecológicos provocados por el ser humano.", "explicacion_tecnica": "El trasvase masivo de agua para el monocultivo de algodón en Asia Central fragmentó el mar de Aral en cuencas residuales hipersalinas.", "fuentes": ["NASA Earth Observatory", "United Nations Environment Programme (UNEP)"]}, {"id": 71, "categoria": "Geografía y Enclaves", "dificultad": "Elevada", "pregunta": "¿Qué estado soberano del sur de Europa es el único país del mundo cuyo territorio está completamente rodeado por la república de San Marino o por Italia, y posee la forma de gobierno de monarquía parlamentaria?", "respuesta_correcta": "San Marino", "comentario_host": "El enclave más antiguo del planeta sobre las laderas del monte Titano, fundado según la tradición en el año 301 d.C.", "explicacion_tecnica": "La Serenísima República de San Marino es un microestado enclavado en la región italiana de Emilia-Romaña y las Marcas.", "fuentes": ["Consiglio Grande e Generale di San Marino", "CIA World Factbook"]}, {"id": 72, "categoria": "Hidrografía Mundial", "dificultad": "Elevada", "pregunta": "¿Cuál es el río más caudaloso del mundo, que vierte al océano Atlántico aproximadamente una quinta parte de todo el caudal fluvial que desemboca en los océanos de la Tierra?", "respuesta_correcta": "Río Amazonas", "comentario_host": "Descarga más de 200.000 metros cúbicos por segundo de agua dulce en la selva sudamericana. El Nilo será largo, pero el Amazonas es una bestialidad.", "explicacion_tecnica": "La cuenca hidrográfica del Amazonas abarca más de siete millones de kilómetros cuadrados en nueve países de América del Sur.", "fuentes": ["USGS Water Resources", "National Oceanic and Atmospheric Administration"]}, {"id": 73, "categoria": "Geografía de Oceanía", "dificultad": "Elevada", "pregunta": "¿Qué fosa oceánica en el Pacífico occidental, situada cerca de Guam, alberga el punto más profundo de la corteza terrestre (el abismo de Challenger a casi 11.000 metros bajo el mar)?", "respuesta_correcta": "Fosa de las Marianas", "comentario_host": "Casi once kilómetros de caída vertical bajo el océano en completa oscuridad y presiones que aplastarían un camión blindado.", "explicacion_tecnica": "Originada por la subducción de la placa del Pacífico bajo la placa de las Marianas, el Challenger Deep fue alcanzado por primera vez en 1960 por el batiscafo Trieste.", "fuentes": ["NOAA Ocean Exploration", "Scripps Institution of Oceanography"]}, {"id": 74, "categoria": "Geografía de América del Norte", "dificultad": "Elevada", "pregunta": "¿Qué gigantesco cañón excavado por el río Colorado a lo largo de millones de años en el norte de Arizona alcanza profundidades de más de 1.600 metros?", "respuesta_correcta": "El Gran Cañón (Grand Canyon)", "comentario_host": "Uno de los cortes estratigráficos naturales más impresionantes del planeta donde se leen dos mil millones de años de historia geológica.", "explicacion_tecnica": "El Parque Nacional del Gran Cañón se extiende a lo largo de 446 km de longitud fluvial en la meseta de Colorado.", "fuentes": ["National Park Service (NPS)", "USGS Geology of the Grand Canyon"]}, {"id": 75, "categoria": "Geografía Política Europea", "dificultad": "Elevada", "pregunta": "¿Qué país insular del Atlántico norte tiene su capital nacional en Reikiavik y se asienta sobre la dorsal mesoatlántica entre placas tectónicas divergentes?", "respuesta_correcta": "Islandia", "comentario_host": "Tierra de hielo, géiseres y volcanes activos. Su parlamento, el Althing, funciona desde el año 930 d.C.", "explicacion_tecnica": "Islandia es la isla volcánica más joven de Europa, formada por el vulcanismo asociado al punto caliente de Islandia sobre la dorsal mesoatlántica.", "fuentes": ["Alþingi Historical Records", "Icelandic Meteorological Office"]}, {"id": 76, "categoria": "Geografía de Oriente Medio", "dificultad": "Elevada", "pregunta": "¿Qué estrecho marítimo de importancia geoestratégica crítica conecta el golfo Pérsico con el golfo de Omán y el mar Arábigo, por donde transita un tercio de todo el petróleo transportado por mar del mundo?", "respuesta_correcta": "Estrecho de Ormuz", "comentario_host": "Entre Irán y Omán. Si alguien bloquea Ormuz, el precio del barril de crudo se dispara por las nubes en diez minutos.", "explicacion_tecnica": "Con una anchura mínima de apenas 39 kilómetros, el canal de navegación comprende dos vías de apenas dos millas de ancho separadas por una zona de separación de tráfico.", "fuentes": ["U.S. Energy Information Administration (EIA)", "International Maritime Organization"]}, {"id": 77, "categoria": "Geografía y Climatología", "dificultad": "Elevada", "pregunta": "¿Cuál es el desierto no polar más árido del planeta, situado en el norte de Chile entre la cordillera de la Costa y los Andes, donde se han registrado periodos de décadas sin una sola gota de lluvia?", "respuesta_correcta": "Desierto de Atacama", "comentario_host": "Tan seco y parecido a Marte que la NASA prueba allí los sensores y rovers antes de mandarlos al espacio.", "explicacion_tecnica": "La aridez extrema de Atacama se debe a la sombra orográfica de los Andes y a la corriente fría de Humboldt en el océano Pacífico, que inhibe la condensación.", "fuentes": ["European Southern Observatory (ESO Atacama)", "Britannica"]}, {"id": 78, "categoria": "Geografía de Europa Central", "dificultad": "Elevada", "pregunta": "¿Qué cadena montañosa en forma de arco de unos 1.500 kilómetros de longitud se extiende por Europa del Este a través de países como Polonia, Eslovaquia, Ucrania y Rumanía?", "respuesta_correcta": "Los Montes Cárpatos (Los Cárpatos)", "comentario_host": "Hogar del oso pardo europeo y de las leyendas de Transilvania. La segunda cordillera más larga de Europa tras los Urales.", "explicacion_tecnica": "Los Cárpatos se dividen en occidentales, orientales y meridionales (Alpes de Transilvania), culminando en el pico Gerlachovský štít (2.655 m) en los Tatras eslovacos.", "fuentes": ["Carpathian Convention Secretariat", "Alpine-Carpathian Geomorphology"]}, {"id": 79, "categoria": "Canales Interoceánicos", "dificultad": "Elevada", "pregunta": "¿Qué vía de navegación artificial inaugurada en noviembre de 1869 en Egipto, construida bajo la dirección de Ferdinand de Lesseps, comunica el mar Mediterráneo con el mar Rojo sin esclusas?", "respuesta_correcta": "Canal de Suez", "comentario_host": "Evita tener que bordear todo el continente africano por el cabo de Buena Esperanza. Recordad cuando el carguero Ever Given lo atascó en 2021.", "explicacion_tecnica": "Con 193 kilómetros de longitud a nivel del mar, el canal permite el paso directo de buques entre Europa y Asia sin necesidad de sistemas de esclusas como Panamá.", "fuentes": ["Suez Canal Authority (SCA)", "Archives Nationales de France"]}, {"id": 80, "categoria": "Geografía Polar", "dificultad": "Elevada", "pregunta": "¿Qué explorador noruego lideró la primera expedición en alcanzar con éxito el Polo Sur geográfico el 14 de diciembre de 1911, superando a la expedición británica de Robert Falcon Scott?", "respuesta_correcta": "Roald Amundsen", "comentario_host": "Usó trineos de perros esquimales, ropa de pieles inuit y una planificación milimétrica. Scott fue con caballos y terminó en tragedia.", "explicacion_tecnica": "Amundsen plantó la bandera de Noruega en el Polo Sur tras una travesía de 99 días partiendo de la bahía de las Ballenas en la barrera de hielo de Ross.", "fuentes": ["Fram Museum (Oslo)", "The South Pole (Roald Amundsen, 1912)"]}, {"id": 81, "categoria": "Pintura Barroca Española", "dificultad": "Elevada", "pregunta": "¿En qué museo nacional de Madrid se conserva la obra maestra 'Las Meninas' (La familia de Felipe IV), pintada por Diego Velázquez en 1656?", "respuesta_correcta": "Museo del Prado (Museo Nacional del Prado)", "comentario_host": "El cuadro más analizado de la historia del arte español. Si habéis dicho el Reina Sofía os habéis confundido con el Guernica, catetos.", "explicacion_tecnica": "Admirado por su complejo juego de planos visuales, espejos y perspectivas donde Velázquez se autorretrata con la cruz de la Orden de Santiago en el pecho.", "fuentes": ["Museo Nacional del Prado - Catálogo Oficial", "Jonathan Brown, 'Velázquez'"]}, {"id": 82, "categoria": "Literatura Clásica", "dificultad": "Elevada", "pregunta": "¿Qué poeta florentino del siglo XIV escribió en dialecto toscano la 'Divina Comedia', guiado en su descenso al Infierno y al Purgatorio por el poeta romano Virgilio?", "respuesta_correcta": "Dante Alighieri (Dante)", "comentario_host": "'Abandonad toda esperanza, vosotros que entráis'. Padre de la lengua italiana literaria moderna.", "explicacion_tecnica": "Estructurada en tercetos encadenados (terza rima) y 100 cantos distribuidos en Infierno, Purgatorio y Paraíso, donde Beatriz le guía hacia la contemplación de Dios.", "fuentes": ["Società Dantesca Italiana", "Penguin Classics"]}, {"id": 83, "categoria": "Cine Clásico de Suspenso", "dificultad": "Elevada", "pregunta": "¿Qué cineasta británico, apodado 'el Mago del Suspenso', dirigió obras maestras como 'Psicosis', 'La ventana indiscreta' y 'Vértigo'?", "respuesta_correcta": "Alfred Hitchcock", "comentario_host": "El maestro absoluto del montaje, los cameos ocultos y el MacGuffin. Si habéis dicho Welles o Kubrick, casi pero no.", "explicacion_tecnica": "Pionero en el uso de la cámara subjetiva para transformar al espectador en voyeur ('Rear Window') y del efecto 'dolly zoom' ('Vertigo').", "fuentes": ["British Film Institute (BFI)", "Truffaut, 'El cine según Hitchcock'"]}, {"id": 84, "categoria": "Filosofía Clásica Griega", "dificultad": "Elevada", "pregunta": "¿En qué diálogo platónico Sócrates pronuncia su discurso de defensa ante el tribunal de Atenas antes de ser condenado a muerte bebiendo cicuta?", "respuesta_correcta": "Apología de Sócrates", "comentario_host": "'Una vida sin examen no merece ser vivida'. Condenado por corromper a la juventud y no creer en los dioses de la polis.", "explicacion_tecnica": "La Apología reproduce el alegato ético y filosófico de Sócrates ante los 501 jueces del tribunal de la Heliea en el 399 a.C.", "fuentes": ["Platón, Diálogos (Gredos)", "Oxford World's Classics"]}, {"id": 85, "categoria": "Literatura del Siglo de Oro", "dificultad": "Elevada", "pregunta": "¿Qué prolífico dramaturgo español, autor de 'Fuenteovejuna' y 'El caballero de Olmedo', fue apodado por Cervantes con admiración como 'el Fénix de los Ingenios'?", "respuesta_correcta": "Lope de Vega", "comentario_host": "Escribió más de mil obras de teatro, revolucionó los corrales de comedias y aún le sobraba tiempo para batirse en duelo y meterse a sacerdote.", "explicacion_tecnica": "Félix Lope de Vega y Carpio codificó las reglas del teatro clásico español en su tratado 'Arte nuevo de hacer comedias en este tiempo' (1609).", "fuentes": ["Real Academia Española (RAE)", "Biblioteca Nacional de España"]}, {"id": 86, "categoria": "Pintura Impresionista", "dificultad": "Elevada", "pregunta": "¿Qué pintor francés pintó en 1872 el cuadro marino 'Impresión, sol naciente' (Impression, soleil levant), cuyo título dio nombre peyorativo a todo el movimiento impresionista?", "respuesta_correcta": "Claude Monet", "comentario_host": "Un crítico se burló del cuadro diciendo que parecía un boceto inacabado 'impresionista', y acabaron fundando la corriente más famosa del siglo XIX.", "explicacion_tecnica": "Exhibido en la exposición independiente de 1874 en el taller del fotógrafo Nadar, retrata el puerto de Le Havre con pinceladas sueltas al aire libre.", "fuentes": ["Musée Marmottan Monet", "National Gallery of Art (Washington)"]}, {"id": 87, "categoria": "Música de Ópera", "dificultad": "Elevada", "pregunta": "¿Qué compositor italiano de ópera romántica compuso 'La traviata', 'Rigoletto', 'Il trovatore' y 'Aida'?", "respuesta_correcta": "Giuseppe Verdi", "comentario_host": "'¡Viva V.E.R.D.I.!' gritaban en las calles italianas durante el Risorgimento para aclamar a Víctor Manuel rey de Italia. Un gigante de la ópera.", "explicacion_tecnica": "Giuseppe Verdi personificó el espíritu patriótico italiano del siglo XIX; sus coros como el 'Va, pensiero' de Nabucco se convirtieron en himnos populares.", "fuentes": ["Teatro alla Scala Archives", "Budden, 'The Operas of Verdi'"]}, {"id": 88, "categoria": "Cine - Historia de los Premios Óscar", "dificultad": "Elevada", "pregunta": "¿Cuál fue la primera película de habla no inglesa en la historia de los Premios de la Academia en ganar el Óscar a la Mejor Película principal en 2020?", "respuesta_correcta": "Parásitos (Parasite / Gisaengchung)", "comentario_host": "Bong Joon-ho reventando la taquilla de Hollywood con una comedia negra de suspense surcoreana sobre la lucha de clases.", "explicacion_tecnica": "Ganadora simultánea de la Palma de Oro en Cannes y cuatro premios Óscar principales (Película, Director, Guion Original y Película Internacional).", "fuentes": ["Academy of Motion Picture Arts and Sciences (Oscars 2020)", "Cannes Film Festival"]}, {"id": 89, "categoria": "Filosofía del Siglo XIX", "dificultad": "Elevada", "pregunta": "¿Qué filósofo alemán proclamó 'Dios ha muerto' en 'La gaya ciencia' y concibió conceptos como el 'Übermensch' (Superhombre) y el eterno retorno en 'Así habló Zaratustra'?", "respuesta_correcta": "Friedrich Nietzsche", "comentario_host": "Martilleando todos los valores tradicionales de la moral occidental. Nietzsche en estado puro.", "explicacion_tecnica": "La filosofía nietzscheana denunció el nihilismo contemporáneo y propuso la transvaloración de todos los valores mediante la afirmación de la voluntad de poder.", "fuentes": ["Kaufmann, 'Nietzsche: Philosopher, Psychologist, Antichrist'", "Stanford Encyclopedia of Philosophy"]}, {"id": 90, "categoria": "Literatura Rusa", "dificultad": "Elevada", "pregunta": "¿Qué novelista ruso escribió en 1866 la obra maestra psicológica 'Crimen y castigo', protagonizada por el estudiante Rodión Raskólnikov?", "respuesta_correcta": "Fiódor Dostoievski (Fyodor Dostoevsky)", "comentario_host": "Raskólnikov matando a hachazos a la vieja usurera para probar si era un ser extraordinario por encima de la ley. Dostoievski, cumbre de la psicología humana.", "explicacion_tecnica": "Publicada por entregas en 'El Mensajero Ruso', la novela explora la culpa moral, la expiación y la redención espiritual en los bajos fondos de San Petersburgo.", "fuentes": ["Frank, 'Dostoevsky: A Writer in His Time'", "Penguin Classics"]}, {"id": 91, "categoria": "Escultura Clásica Griega", "dificultad": "Elevada", "pregunta": "¿Qué escultor ateniense del siglo V a.C. supervisó la decoración escultórica del Partenón y esculpió las monumentales estatuas crisoelefantinas de Atenea Pártenos y Zeus en Olimpia?", "respuesta_correcta": "Fidias", "comentario_host": "El artista cumbre del Siglo de Pericles. La estatua de Zeus en Olimpia era una de las Siete Maravillas del Mundo Antiguo.", "explicacion_tecnica": "Fidias introdujo la técnica de los paños mojados para sugerir el volumen anatómico bajo los ropajes en los frisos y metopas del Partenón.", "fuentes": ["Pausanias, Descripción de Grecia", "British Museum Parthenon Sculptures"]}, {"id": 92, "categoria": "Cine Clásico Americano", "dificultad": "Elevada", "pregunta": "¿Qué director de cine, con tan solo 25 años, coescribió, dirigió y protagonizó en 1941 la revolucionaria película 'Ciudadano Kane' (Citizen Kane)?", "respuesta_correcta": "Orson Welles", "comentario_host": "'Rosebud'... Innovó la profundidad de campo, los techos en decorados y la narrativa no lineal. Una obra que cambió el lenguaje cinematográfico para siempre.", "explicacion_tecnica": "Fotografiada por Gregg Toland con lentes de gran angular y focales cerradas, 'Citizen Kane' fue un hito absoluto de la puesta en escena moderna.", "fuentes": ["American Film Institute (AFI 100 Years... 100 Movies #1)", "Library of Congress"]}, {"id": 93, "categoria": "Literatura Española Contemporánea", "dificultad": "Elevada", "pregunta": "¿Qué poeta y dramaturgo granadino de la Generación del 27 escribió 'Romancero gitano', 'Bodas de sangre' y 'La casa de Bernarda Alba' antes de ser fusilado en 1936?", "respuesta_correcta": "Federico García Lorca", "comentario_host": "Uno de los mayores genios líricos y dramáticos de la lengua española en el siglo XX.", "explicacion_tecnica": "Fusilado en el barranco de Víznar en agosto de 1936, su obra fundió la vanguardia surrealista con las raíces populares del folclore andaluz.", "fuentes": ["Instituto Cervantes", "Fundación Federico García Lorca"]}, {"id": 94, "categoria": "Pintura Surrealista", "dificultad": "Elevada", "pregunta": "¿Qué pintor surrealista catalán pintó en 1931 el célebre cuadro 'La persistencia de la memoria', caracterizado por relojes blandos derritiéndose sobre un paisaje de Portlligat?", "respuesta_correcta": "Salvador Dalí", "comentario_host": "Los relojes blandos que parecen lonchas de queso camembert al sol. Dalí con sus bigotes y su método paranoico-crítico.", "explicacion_tecnica": "Conservada en el MoMA de Nueva York, la obra simboliza la relatividad del tiempo y la descomposición de la rigidez mecánica en el mundo de los sueños.", "fuentes": ["Museum of Modern Art (MoMA Catálogo)", "Fundació Gala-Salvador Dalí"]}, {"id": 95, "categoria": "Teatro Isabelino", "dificultad": "Elevada", "pregunta": "¿En qué tragedia de William Shakespeare el príncipe de Dinamarca se debate ante el espectro de su padre asesinado pronunciando el famoso soliloquio 'Ser o no ser'?", "respuesta_correcta": "Hamlet", "comentario_host": "Con la calavera del bufón Yorick en la mano. Si habéis dicho Macbeth o Romeo y Julieta es para echarse a llorar.", "explicacion_tecnica": "Compuesta entre 1599 y 1601, 'The Tragedy of Hamlet, Prince of Denmark' es la pieza teatral más extensa e influyente de Shakespeare.", "fuentes": ["Folger Shakespeare Library", "Oxford Shakespeare"]}, {"id": 96, "categoria": "Filosofía Política Moderna", "dificultad": "Elevada", "pregunta": "¿Qué filósofo inglés del siglo XVII describió el estado de naturaleza humano como 'solitario, pobre, tosco, embrutecido y breve', proponiendo un Estado soberano absolutista en su tratado 'Leviatán' (1651)?", "respuesta_correcta": "Thomas Hobbes", "comentario_host": "'El hombre es un lobo para el hombre' (homo homini lupus). El contrato social firmado por miedo a morir en la anarquía.", "explicacion_tecnica": "Hobbes argumentó que para escapar del estado de guerra de todos contra todos, los individuos deben transferir su derecho natural a un soberano absoluto que garantice la paz.", "fuentes": ["Stanford Encyclopedia of Philosophy", "Cambridge Texts in the History of Political Thought"]}, {"id": 97, "categoria": "Música del Romanticismo", "dificultad": "Elevada", "pregunta": "¿Qué pianista y compositor polaco del Romanticismo compuso célebres nocturnos, polonesas y baladas dedicadas a la independencia de su patria natal, viviendo exiliado en París?", "respuesta_correcta": "Frédéric Chopin (Fryderyk Chopin)", "comentario_host": "El poeta del piano por excelencia. Murió de tuberculosis en París y pidió que su corazón fuera enterrado en Varsovia.", "explicacion_tecnica": "Chopin compuso casi exclusivamente para piano solista, revolucionando el uso del pedal de resonancia, el rubato y las armonías cromáticas.", "fuentes": ["The Fryderyk Chopin Institute (Varsovia)", "The New Grove Dictionary of Music"]}, {"id": 98, "categoria": "Pintura Barroca Holandesa", "dificultad": "Elevada", "pregunta": "¿Qué maestro del claroscuro de la Edad de Oro neerlandesa pintó en 1642 el colosal lienzo de milicia ciudadana conocido como 'La ronda de noche' (De Nachtwacht)?", "respuesta_correcta": "Rembrandt (Rembrandt van Rijn)", "comentario_host": "Preside la galería de honor del Rijksmuseum de Ámsterdam. Capitán Frans Banninck Cocq comandando a los guardias en plena penumbra dorada.", "explicacion_tecnica": "Rembrandt dinamizó el género tradicional del retrato corporativo holandés convirtiéndolo en una escena de acción militar viva y teatral.", "fuentes": ["Rijksmuseum Official Catalog", "Schama, 'Rembrandt's Eyes'"]}, {"id": 99, "categoria": "Cine - Dirección y Animación", "dificultad": "Elevada", "pregunta": "¿Qué director de animación y cofundador japonés de Studio Ghibli dirigió obras maestras como 'El viaje de Chihiro', 'La princesa Mononoke' y 'Mi vecino Totoro'?", "respuesta_correcta": "Hayao Miyazaki", "comentario_host": "El emperador de la animación tradicional dibujada a mano. 'El viaje de Chihiro' ganó el Oso de Oro de Berlín y el Óscar de animación.", "explicacion_tecnica": "Hayao Miyazaki fundó Studio Ghibli en 1985 junto a Isao Takahata y Toshio Suzuki, explorando temas como el ecologismo, el pacifismo y la aviación.", "fuentes": ["Studio Ghibli Official Records", "Academy of Motion Picture Arts and Sciences"]}, {"id": 100, "categoria": "Filosofía Existencialista", "dificultad": "Elevada", "pregunta": "¿Qué filósofo y escritor existencialista francés, autor de 'El ser y la nada' (1943), rechazó públicamente el Premio Nobel de Literatura en 1964 alegando que ningún escritor debe dejarse transformar en institución?", "respuesta_correcta": "Jean-Paul Sartre", "comentario_host": "'La existencia precede a la esencia' y 'El infierno son los otros'. Rechazó el Nobel y la pasta porque no le daba la gana deberle nada a nadie.", "explicacion_tecnica": "Sartre envió una carta a la Academia Sueca rechazando el galardón, argumentando su compromiso con la independencia intelectual frente a los reconocimientos oficiales de Occidente.", "fuentes": ["Nobel Prize in Literature 1964 Official Declaration", "Bibliothèque Nationale de France"]}];
+
+    let players = [];
+    let playerScores = {};
+    let currentQuestionIndex = 0;
+    let questionFeedbacks = {}; // id -> 'like' | 'dislike' | null
+    let questionResults = {};   // index -> { scored: ['Llopis'], failed: ['Parra'] }
+    let currentRoundScored = new Set();
+
+    const ROSTER_BUTANEROS = ["Llopis", "Parra", "Victor", "Huerta", "Andrés", "Marta", "JAE", "Adri", "Mandres", "Sergio Díez", "Garrido", "Gonzalito", "Cadenas", "Jorge"];
+
+    function quickAdd(name) {
+      if (!players.includes(name)) {
+        players.push(name);
+        playerScores[name] = 0;
+        renderPlayerTags();
+      }
+    }
+
+    function addAllButaneros() {
+      ROSTER_BUTANEROS.forEach(p => {
+        if (!players.includes(p)) {
+          players.push(p);
+          playerScores[p] = 0;
+        }
+      });
+      renderPlayerTags();
+    }
+
+    function addPlayer() {
+      const input = document.getElementById("playerNameInput");
+      const name = input.value.trim();
+      if (name && !players.includes(name)) {
+        players.push(name);
+        playerScores[name] = 0;
+        input.value = "";
+        renderPlayerTags();
+      }
+    }
+
+    function removePlayer(name) {
+      players = players.filter(p => p !== name);
+      delete playerScores[name];
+      renderPlayerTags();
+    }
+
+    function renderPlayerTags() {
+      const container = document.getElementById("playerListTagContainer");
+      container.innerHTML = "";
+      players.forEach(p => {
+        const tag = document.createElement("div");
+        tag.className = "player-tag";
+        tag.innerHTML = `<span>👤 ${p}</span> <span class="btn-remove-tag" onclick="removePlayer('${p}')">×</span>`;
+        container.appendChild(tag);
+      });
+    }
+
+    function startTrivia() {
+      if (players.length === 0) {
+        ["Victor", "Llopis", "Parra"].forEach(p => {
+          players.push(p);
+          playerScores[p] = 0;
+        });
+      }
+      document.getElementById("setupScreen").style.display = "none";
+      document.getElementById("gameScreen").style.display = "block";
+      loadQuestion(0);
+    }
+
+    function loadQuestion(index) {
+      currentQuestionIndex = index;
+      currentRoundScored.clear();
+      const q = QUESTIONS_DATA[index];
+
+      document.getElementById("categoryBadge").innerText = q.categoria;
+      document.getElementById("counterBadge").innerText = `${index + 1} / ${QUESTIONS_DATA.length}`;
+      const progressPercent = ((index + 1) / QUESTIONS_DATA.length) * 100;
+      document.getElementById("progressFill").style.width = `${progressPercent}%`;
+
+      document.getElementById("questionText").innerText = q.pregunta;
+      document.getElementById("answerText").innerText = q.respuesta_correcta;
+      document.getElementById("hostComment").innerText = q.comentario_host;
+      document.getElementById("sourceText").innerText = q.fuentes.join(" | ");
+
+      updateFeedbackButtons();
+
+      document.getElementById("answerSection").style.display = "none";
+      document.getElementById("revealBtn").style.display = "inline-flex";
+      document.getElementById("nextBtn").style.display = "none";
+
+      const chipsContainer = document.getElementById("playerChipsContainer");
+      chipsContainer.innerHTML = "";
+      players.forEach(p => {
+        const chip = document.createElement("div");
+        chip.className = "player-chip";
+        chip.id = `chip-${p}`;
+        chip.innerHTML = `👤 ${p} <span>⚪</span>`;
+        chip.onclick = () => togglePlayerScore(p);
+        chipsContainer.appendChild(chip);
+      });
+    }
+
+    function rateQuestion(type) {
+      const qId = QUESTIONS_DATA[currentQuestionIndex].id;
+      if (questionFeedbacks[qId] === type) {
+        delete questionFeedbacks[qId];
+      } else {
+        questionFeedbacks[qId] = type;
+      }
+      updateFeedbackButtons();
+    }
+
+    function updateFeedbackButtons() {
+      const qId = QUESTIONS_DATA[currentQuestionIndex].id;
+      const status = questionFeedbacks[qId];
+      const likeBtn = document.getElementById("likeBtn");
+      const dislikeBtn = document.getElementById("dislikeBtn");
+
+      likeBtn.classList.toggle("liked", status === "like");
+      dislikeBtn.classList.toggle("disliked", status === "dislike");
+
+      document.getElementById("likeCount").innerText = status === "like" ? "1" : "0";
+      document.getElementById("dislikeCount").innerText = status === "dislike" ? "1" : "0";
+    }
+
+    function revealAnswer() {
+      document.getElementById("answerSection").style.display = "block";
+      document.getElementById("revealBtn").style.display = "none";
+      document.getElementById("nextBtn").style.display = "inline-flex";
+      if (currentQuestionIndex === QUESTIONS_DATA.length - 1) {
+        document.getElementById("nextBtn").innerText = "Ver Clasificación Final 🏆";
+      } else {
+        document.getElementById("nextBtn").innerText = "Siguiente Pregunta ➡️";
+      }
+    }
+
+    function togglePlayerScore(playerName) {
+      const chip = document.getElementById(`chip-${playerName}`);
+      if (currentRoundScored.has(playerName)) {
+        currentRoundScored.delete(playerName);
+        playerScores[playerName]--;
+        chip.classList.remove("scored");
+        chip.innerHTML = `👤 ${playerName} <span>⚪</span>`;
+      } else {
+        currentRoundScored.add(playerName);
+        playerScores[playerName]++;
+        chip.classList.add("scored");
+        chip.innerHTML = `👤 ${playerName} <span>🟢 +1</span>`;
+      }
+    }
+
+    function nextQuestion() {
+      // Guardar resultados de esta pregunta
+      const scoredList = Array.from(currentRoundScored);
+      const failedList = players.filter(p => !currentRoundScored.has(p));
+      questionResults[currentQuestionIndex] = {
+        scored: scoredList,
+        failed: failedList
+      };
+
+      if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
+        loadQuestion(currentQuestionIndex + 1);
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById("gameScreen").style.display = "none";
+      document.getElementById("resultsScreen").style.display = "block";
+
+      const sortedPlayers = [...players].sort((a, b) => playerScores[b] - playerScores[a]);
+      const podium = document.getElementById("podiumContainer");
+      podium.innerHTML = "";
+
+      sortedPlayers.forEach((p, idx) => {
+        const row = document.createElement("div");
+        row.className = "podium-item";
+        let medal = "🎖️";
+        let title = "Butanero Estándar";
+        if (idx === 0) { medal = "🥇"; title = "El Cerebro del Grupo"; }
+        else if (idx === 1) { medal = "🥈"; title = "Subcampeón"; }
+        else if (idx === 2) { medal = "🥉"; title = "En el podio"; }
+        else if (idx === sortedPlayers.length - 1) { medal = "🥔"; title = "El Cateto Oficial"; }
+
+        row.innerHTML = `
+          <div style="display: flex; align-items: center;">
+            <span class="podium-rank">${medal}</span>
+            <div>
+              <div style="font-weight: 700; font-size: 1.05rem;">${p}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">${title}</div>
+            </div>
+          </div>
+          <div class="podium-score">${playerScores[p]} / ${QUESTIONS_DATA.length} pts</div>
+        `;
+        podium.appendChild(row);
+      });
+
+      let likes = 0;
+      let dislikes = 0;
+      Object.values(questionFeedbacks).forEach(v => {
+        if (v === 'like') likes++;
+        if (v === 'dislike') dislikes++;
+      });
+
+      document.getElementById("totalLikes").innerText = likes;
+      document.getElementById("totalDislikes").innerText = dislikes;
+    }
+
+    function finishAndCopySummary() {
+      const sortedPlayers = [...players].sort((a, b) => playerScores[b] - playerScores[a]);
+      const totalQ = QUESTIONS_DATA.length;
+      const nowStr = new Date().toLocaleString("es-ES");
+
+      let summary = `=== RESUMEN DE SESIÓN CULTURIZANDO PIBES ===\n`;
+      summary += `Sesión: Culturizando Pibes: Mega-Sesión de 100 Preguntas\n`;
+      summary += `Fecha: ${nowStr}\n\n`;
+
+      summary += `[CLASIFICACIÓN]\n`;
+      sortedPlayers.forEach((p, idx) => {
+        summary += `- ${idx + 1}° ${p}: ${playerScores[p]}/${totalQ} aciertos\n`;
+      });
+
+      summary += `\n[DETALLE DE PREGUNTAS Y VALORACIONES]\n`;
+      QUESTIONS_DATA.forEach((q, idx) => {
+        const rating = questionFeedbacks[q.id] === 'like' ? '👍 LIKE' : (questionFeedbacks[q.id] === 'dislike' ? '👎 DISLIKE' : 'SIN VALORAR');
+        const res = questionResults[idx] || { scored: [], failed: players };
+        const scoredStr = res.scored.length > 0 ? res.scored.join(", ") : "Nadie";
+        const failedStr = res.failed.length > 0 ? res.failed.join(", ") : "Nadie";
+
+        summary += `- Pregunta ${idx + 1}: [ID ${q.id}] - [${q.categoria}]\n`;
+        summary += `  Enunciado: "${q.pregunta}"\n`;
+        summary += `  Respuesta: ${q.respuesta_correcta}\n`;
+        summary += `  Valoración: ${rating}\n`;
+        summary += `  Acertaron: [${scoredStr}] | Fallaron: [${failedStr}]\n\n`;
+      });
+
+      summary += `============================================`;
+
+      navigator.clipboard.writeText(summary).then(() => {
+        showToast("¡Resumen copiado para aprendizaje!");
+      }).catch(() => {
+        const textarea = document.createElement("textarea");
+        textarea.value = summary;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        showToast("¡Resumen copiado para aprendizaje!");
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.innerText = msg;
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2800);
+    }
+  </script>
+</body>
+</html>
