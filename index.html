@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <title>Culturizando Pibes: Gran Sesión #03 (100 Preguntas)</title>
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 15%, #18181b 0%, #0c0c0e 55%, #050505 100%);
+      --glass-bg: rgba(24, 24, 27, 0.88);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-shadow: 0 20px 48px rgba(0, 0, 0, 0.8);
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+      --accent-blue: #3b82f6;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 16px 80px 16px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      width: 100%;
+      max-width: 680px;
+      position: relative;
+      z-index: 1;
+    }
+    /* Top Bar flotante */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .nav-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.12); }
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    select.nav-select {
+      background: #111;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      outline: none;
+    }
+    /* Tarjeta principal */
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--glass-shadow);
+      margin-bottom: 16px;
+    }
+    .badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--accent-blue);
+    }
+    .qid-badge {
+      color: var(--text-muted);
+      font-family: monospace;
+      font-size: 12px;
+    }
+    .pregunta-texto {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.45;
+      margin-bottom: 20px;
+      color: #fafafa;
+    }
+    .turno-box {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .turno-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .turno-player {
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+    }
+    /* Acciones de acierto */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .btn-action {
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-acierto {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+    .btn-acierto.active {
+      background: var(--accent-emerald);
+      color: #000;
+    }
+    .btn-fallo {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.4);
+      color: #fb7185;
+    }
+    .btn-fallo.active {
+      background: var(--accent-rose);
+      color: #fff;
+    }
+    /* Revelar respuesta */
+    .reveal-btn {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.2);
+      color: var(--text-main);
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+    .reveal-box {
+      display: none;
+      background: rgba(0,0,0,0.4);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .reveal-resp {
+      font-size: 17px;
+      font-weight: bold;
+      color: #6ee7b7;
+      margin-bottom: 8px;
+    }
+    .reveal-host {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    /* Barra de Valoración y Reporte */
+    .feedback-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .val-btns {
+      display: flex;
+      gap: 8px;
+    }
+    .val-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .val-btn.selected-like {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: var(--accent-emerald);
+      color: #34d399;
+    }
+    .val-btn.selected-dislike {
+      background: rgba(244, 63, 94, 0.25);
+      border-color: var(--accent-rose);
+      color: #fb7185;
+    }
+    .btn-report {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    /* Modal de Reporte / Etiquetas */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-box {
+      background: #18181b;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 18px;
+      max-width: 440px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .tag-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .tag-chip {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+    .tag-chip.active {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: var(--accent-amber);
+      color: #fde68a;
+    }
+    .modal-textarea {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: #fff;
+      padding: 10px;
+      font-size: 13px;
+      resize: vertical;
+      min-height: 60px;
+      margin-bottom: 16px;
+      font-family: inherit;
+      outline: none;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    /* Botón Flotante Permanente */
+    .floating-bar {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 680px;
+      z-index: 50;
+    }
+    .btn-copiar-resumen {
+      width: 100%;
+      background: #fafafa;
+      color: #09090b;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast {
+      display: none;
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #10b981;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      z-index: 200;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toast" id="toast">✅ Resumen JSON copiado al portapapeles</div>
+
+  <div class="container">
+    <!-- Top Nav con Selector y Salto Libre -->
+    <div class="top-nav">
+      <button class="nav-btn" onclick="cambiarPregunta(-1)">← Anterior</button>
+      <div class="nav-center">
+        <select class="nav-select" id="selector-pregunta" onchange="irAPregunta(this.value)"></select>
+      </div>
+      <button class="nav-btn" onclick="cambiarPregunta(1)">Siguiente →</button>
+    </div>
+
+    <!-- Tarjeta de Pregunta Actual -->
+    <div class="card" id="card-pregunta">
+      <div class="badge-row">
+        <span class="badge" id="badge-cat">Categoría</span>
+        <span class="qid-badge" id="badge-qid">Q-0000</span>
+      </div>
+
+      <div class="pregunta-texto" id="txt-pregunta">Cargando pregunta...</div>
+
+      <!-- Turno asignado -->
+      <div class="turno-box">
+        <span class="turno-label">🎯 Turno de:</span>
+        <select class="nav-select" id="select-jugador" onchange="asignarJugador(this.value)"></select>
+      </div>
+
+      <!-- Acierto / Fallo -->
+      <div class="action-grid">
+        <button class="btn-action btn-acierto" id="btn-acierto" onclick="marcarAcierto(true)">
+          ✓ Acertó (+1)
+        </button>
+        <button class="btn-action btn-fallo" id="btn-fallo" onclick="marcarAcierto(false)">
+          ✗ Falló
+        </button>
+      </div>
+
+      <!-- Revelar Respuesta y Host -->
+      <button class="reveal-btn" id="btn-revelar" onclick="toggleRespuesta()">👁️ Revelar Respuesta y Host</button>
+      <div class="reveal-box" id="box-respuesta">
+        <div class="reveal-resp" id="txt-respuesta">Respuesta</div>
+        <div class="reveal-host" id="txt-host">Comentario del Host</div>
+      </div>
+
+      <!-- Valoración & Reporte -->
+      <div class="feedback-row">
+        <div class="val-btns">
+          <button class="val-btn" id="btn-like" onclick="valorar('like')">👍 Like</button>
+          <button class="val-btn" id="btn-dislike" onclick="valorar('dislike')">👎 Dislike</button>
+        </div>
+        <button class="btn-report" onclick="abrirModalReporte()">💬 Comentario / Reportar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón Flotante Permanente -->
+  <div class="floating-bar">
+    <button class="btn-copiar-resumen" onclick="copiarResumen()">
+      📋 Copiar Resumen JSON (Accesible siempre)
+    </button>
+  </div>
+
+  <!-- Modal de Reporte / Etiquetas -->
+  <div class="modal-overlay" id="modal-reporte">
+    <div class="modal-box">
+      <div class="modal-title">Reportar / Comentario sobre la pregunta</div>
+      <div class="tag-grid">
+        <div class="tag-chip" onclick="toggleTag(this, 'muy_larga')">Muy larga</div>
+        <div class="tag-chip" onclick="toggleTag(this, 'spoiler_enunciado')">Spoiler en enunciado</div>
+        <div class="tag-chip" onclick="toggleTag(this, 'dato_dudoso')">Dato dudoso</div>
+        <div class="tag-chip" onclick="toggleTag(this, 'repetida')">Repetida</div>
+        <div class="tag-chip" onclick="toggleTag(this, 'tema_flojo')">Tema flojo</div>
+      </div>
+      <textarea class="modal-textarea" id="modal-comentario" placeholder="Comentario libre opcional..."></textarea>
+      <div class="modal-actions">
+        <button class="nav-btn" onclick="cerrarModalReporte()">Cancelar</button>
+        <button class="nav-btn" style="background:#fff; color:#000;" onclick="guardarReporte()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PREGUNTAS = [{"id": "Q-0151", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿En qué ciudad ficticia de Nuevo México transcurre la trama criminal de Walter White en la serie 'Breaking Bad'?", "respuesta_correcta": "Albuquerque", "comentario_host": "Cocinar metanfetamina azul en una caravana en el desierto.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0024", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "En la monumental saga 'Dune' de Frank Herbert, ¿cómo se llama el planeta desértico (también conocido por su nombre nativo) donde se extrae la codiciada especia melange?", "respuesta_correcta": "Arrakis (o Dune)", "comentario_host": "El planeta de los gusanos de arena Shai-Hulud y de los Fremen. El que controla la especia controla el universo.", "fuentes": ["Frank Herbert, 'Dune' (1965)", "The Dune Encyclopedia"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0152", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "En el universo de Star Wars, ¿qué maestro Jedi de raza desconocida fue el gran líder de la Orden y entrenó a Luke Skywalker en Dagobah?", "respuesta_correcta": "Yoda", "comentario_host": "Pequeño, verde y hablando con sintaxis invertida.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0006", "categoria": "Cultura Pop / Gen Z / Temas Aleatorios", "dificultad": "Elevada", "pregunta": "¿En qué ciudad estadounidense se celebró entre abril y junio de 1945 la conferencia multilateral donde 50 naciones redactaron y firmaron la Carta fundacional de las Naciones Unidas?", "respuesta_correcta": "San Francisco", "comentario_host": "Ni Nueva York, ni Ginebra, ni Washington. La Carta de la ONU se firmó en San Francisco al terminar la Segunda Guerra Mundial.", "fuentes": ["United Nations Archives", "Department of State Bulletin"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0064", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Qué médico y microbiólogo escocés descubrió en septiembre de 1928 las propiedades bactericidas del hongo 'Penicillium notatum' al contaminarse accidentalmente una placa de estafilococos en el St Mary's Hospital?", "respuesta_correcta": "Alexander Fleming", "comentario_host": "Se fue de vacaciones y dejó las placas de cultivo sin fregar en el fregadero. El hongo creció y mató a las bacterias: nació la penicilina.", "fuentes": ["Nobel Prize in Physiology or Medicine 1945", "British Journal of Experimental Pathology (1929)"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0041", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Cómo se denominan los componentes elementales de espín 1/2 que, agrupados en tripletes o pares con antiquarks, componen los hadrones como el protón y el neutrón?", "respuesta_correcta": "Quarks", "comentario_host": "Arriba, abajo, encanto, extraño, cima y fondo. Propuestos por Murray Gell-Mann tomando el nombre de una novela de James Joyce.", "fuentes": ["Particle Data Group (PDG)", "Nobel Prize in Physics 1969"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0001", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿Qué emperador romano legalizó la práctica del cristianismo en todo el Imperio Romano mediante la promulgación del Edicto de Milán en el año 313 d.C.?", "respuesta_correcta": "Constantino I (Constantino el Grande)", "comentario_host": "A ver si os suena de algo la historia básica o pensabais que los leones del Coliseo aún siguen comiendo mártires. Constantino I en el 313. El que haya soltado Nerón o Julio César que se meta un guantazo.", "fuentes": ["Oxford Classical Dictionary", "Encyclopedia Britannica"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0025", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "¿Qué mangaka japonés es el creador de la universal franquicia 'Dragon Ball' y del diseño de personajes de la saga de videojuegos 'Dragon Quest' y 'Chrono Trigger'?", "respuesta_correcta": "Akira Toriyama", "comentario_host": "Una leyenda que nos acompañó a todos de críos. El creador de Goku y el maestro del dibujo de acción cinético.", "fuentes": ["Shueisha Official Archives", "Toei Animation"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0078", "categoria": "Geografía Física y Política", "dificultad": "Elevada", "pregunta": "¿Qué cadena montañosa en forma de arco de unos 1.500 kilómetros de longitud se extiende por Europa del Este a través de países como Polonia, Eslovaquia, Ucrania y Rumanía?", "respuesta_correcta": "Los Montes Cárpatos (Los Cárpatos)", "comentario_host": "Hogar del oso pardo europeo y de las leyendas de Transilvania. La segunda cordillera más larga de Europa tras los Urales.", "fuentes": ["Carpathian Convention Secretariat", "Alpine-Carpathian Geomorphology"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0009", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿En qué año exacto las fuerzas del Imperio Otomano lideradas por el joven sultán Mehmed II conquistaron Constantinopla, poniendo fin definitivo al Imperio Romano de Oriente?", "respuesta_correcta": "1453 (el 29 de mayo de 1453)", "comentario_host": "El hito canónico que separa la Edad Media de la Edad Moderna: 1453. Cayó la muralla teodosiana ante los cañones otomanos. El que haya dicho 1492 se ha liado con Colón y los Reyes Católicos, cateto.", "fuentes": ["The Fall of Constantinople 1453 (Steven Runciman)", "Cambridge Illustrated History of the Middle Ages"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0106", "categoria": "Deportes", "dificultad": "Elevada", "pregunta": "¿Qué atleta etíope ganó la maratón de los Juegos Olímpicos de Roma 1960 corriendo descalzo por los adoquines?", "respuesta_correcta": "Abebe Bikila", "comentario_host": "Descalzo ganó el oro, y vosotros os cansáis de ir a por tabaco.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0101", "categoria": "Deportes", "dificultad": "Elevada", "pregunta": "¿Qué selección nacional de fútbol ganó la edición inaugural de la Eurocopa celebrada en 1960 en Francia?", "respuesta_correcta": "Unión Soviética (URSS)", "comentario_host": "Lev Yashin en la portería parándolo todo, inútiles.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0094", "categoria": "Cultura Pop / Gen Z / Temas Aleatorios", "dificultad": "Elevada", "pregunta": "¿Qué pintor surrealista catalán pintó en 1931 el célebre cuadro 'La persistencia de la memoria', caracterizado por relojes blandos derritiéndose sobre un paisaje de Portlligat?", "respuesta_correcta": "Salvador Dalí", "comentario_host": "Los relojes blandos que parecen lonchas de queso camembert al sol. Dalí con sus bigotes y su método paranoico-crítico.", "fuentes": ["Museum of Modern Art (MoMA Catálogo)", "Fundació Gala-Salvador Dalí"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0136", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿En qué ópera del compositor italiano Giuseppe Verdi suena el célebre coro de los esclavos hebreos conocido como 'Va, pensiero'?", "respuesta_correcta": "Nabucco", "comentario_host": "El himno oficioso de la unificación italiana.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0134", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿Qué cantautor folk estadounidense fue galardonado con el Premio Nobel de Literatura en 2016 por sus creaciones poéticas?", "respuesta_correcta": "Bob Dylan (Robert Zimmerman)", "comentario_host": "Ni fue a recoger el premio el tío chulo.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0003", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Qué astrofísica británica descubrió en 1967 los púlsares (estrellas de neutrones en rápida rotación) mientras analizaba datos de radiotelescopio en la Universidad de Cambridge?", "respuesta_correcta": "Jocelyn Bell Burnell", "comentario_host": "Descubrió las señales periódicas de radio más misteriosas del universo y luego su director de tesis se llevó el Premio Nobel por su trabajo. Hay que conocer a Jocelyn Bell Burnell, cabrones.", "fuentes": ["Royal Society of London", "Nobel Prize in Physics 1974 Overview"], "estado": "activa", "motivo_revision": "Voto unánime DISLIKE (sesión 18/10/2026)", "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 1, "reportes": []}}, {"id": "Q-0070", "categoria": "Geografía Física y Política", "dificultad": "Elevada", "pregunta": "¿Qué mar interior endorreico situado entre Kazajistán y Uzbekistán perdió más del 90% de su volumen original en la segunda mitad del siglo XX debido al desvío soviético de los ríos Amu Daria y Sir Daria?", "respuesta_correcta": "Mar de Aral", "comentario_host": "Barcos pesqueros oxidados abandonados en mitad de un desierto de arena y sal. Uno de los mayores desastres ecológicos provocados por el ser humano.", "fuentes": ["NASA Earth Observatory", "United Nations Environment Programme (UNEP)"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0012", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿Qué legendaria película de 1968, dirigida por Stanley Kubrick y coescrita con Arthur C. Clarke, introdujo en la cultura popular al perturbador ordenador con IA 'HAL 9000'?", "respuesta_correcta": "2001: Una odisea del espacio (2001: A Space Odyssey)", "comentario_host": "'Lo siento, Dave, me temo que no puedo hacer eso'. 2001: Una odisea del espacio de Kubrick. Obra cumbre de la historia del cine que no os vendría mal ver en vez de tanto reality de tres al cuarto.", "fuentes": ["British Film Institute (BFI Top 100)", "Academy of Motion Picture Arts and Sciences"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0001", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿En qué batalla naval del año 480 a.C. la flota de las polis griegas liderada por Temístocles aplastó a la armada persa de Jerjes I en el golfo Sarónico?", "respuesta_correcta": "Batalla de Salamina", "comentario_host": "El que haya dicho las Termópilas que se vea otra vez la peli de los espartanos en taparrabos. Salamina fue en el mar, catetos.", "fuentes": ["Heródoto, Historias (Libro VIII)", "Cambridge Ancient History"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 3, "aciertos": 2, "fallos": 0, "likes": 2, "dislikes": 0, "reportes": []}}, {"id": "Q-0058", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Cómo se denomina la aceleración aparente que experimenta un cuerpo en movimiento relativo dentro de un sistema de referencia en rotación, responsable del sentido de giro de los ciclones en la Tierra?", "respuesta_correcta": "Efecto Coriolis (o Fuerza / Aceleración de Coriolis)", "comentario_host": "Gaspard-Gustave de Coriolis en 1835. Desvía los vientos a la derecha en el hemisferio norte y a la izquierda en el hemisferio sur.", "fuentes": ["Holton, 'An Introduction to Dynamic Meteorology'", "Britannica"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0020", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "¿Qué célebre diseñador de videojuegos japonés creó la saga 'The Legend of Zelda' y 'Super Mario Bros' para Nintendo en los años 80?", "respuesta_correcta": "Shigeru Miyamoto", "comentario_host": "El padre de media industria del videojuego. Como hayáis dicho Kojima o Sakurai es para quitaros la consola de por vida.", "fuentes": ["Nintendo Corporate History", "The Game Makers: Shigeru Miyamoto (GDC)"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0026", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "¿Qué programador ruso diseñó e implementó en 1984 en un ordenador soviético Elektronika 60 el mítico juego de puzles de bloques geométricos 'Tetris'?", "respuesta_correcta": "Alekséi Pázhitnov (Alexey Pajitnov)", "comentario_host": "El juego más vendido y versionado de la historia, inventado en la Academia de Ciencias de la URSS durante la Guerra Fría.", "fuentes": ["The Tetris Company", "Box, 'Tetris: The Games People Play'"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0128", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿Qué mítico álbum de rock progresivo de Pink Floyd, lanzado en 1973, muestra en su portada la refracción de luz a través de un prisma?", "respuesta_correcta": "The Dark Side of the Moon", "comentario_host": "Obra maestra que estuvo 900 semanas en listas.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0020", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Cómo se define la velocidad mínima que debe alcanzar un objeto sin propulsión adicional para escapar definitivamente del campo gravitatorio de un cuerpo celeste masivo, que en la Tierra equivale a unos 11.2 km/s?", "respuesta_correcta": "Velocidad de escape (o segunda velocidad cósmica)", "comentario_host": "La velocidad de escape: exactamente la velocidad a la que deberíais salir corriendo todos a comprar una enciclopedia antes de la próxima partida. Menudo repaso os habéis llevado, Butaneros.", "fuentes": ["Physics for Scientists and Engineers (Serway)", "NASA Glenn Research Center"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0104", "categoria": "Deportes", "dificultad": "Elevada", "pregunta": "¿Qué tenista sueco conquistó cinco títulos consecutivos individuales masculinos en Wimbledon entre 1976 y 1980?", "respuesta_correcta": "Björn Borg", "comentario_host": "El hombre de hielo sobre la hierba de Londres.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0110", "categoria": "Deportes", "dificultad": "Elevada", "pregunta": "¿Qué país conquistó la medalla de oro en baloncesto masculino en los Juegos Olímpicos de Múnich 1972 tras tres polémicos segundos finales?", "respuesta_correcta": "Unión Soviética (URSS)", "comentario_host": "La canasta de Aleksandr Belov que los estadounidenses nunca aceptaron.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0160", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "¿Qué emblemático videojuego de rol de Square lanzado en 1997 puso a los mandos de Cloud Strife contra la corporación Shinra?", "respuesta_correcta": "Final Fantasy VII", "comentario_host": "El espadón buster y la muerte de Aeris que traumatizó a una generación.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0018", "categoria": "Geografía Física y Política", "dificultad": "Elevada", "pregunta": "¿Qué estrecho marítimo separa la isla de Sicilia de la región italiana de Calabria, custodiado en la mitología clásica por los temibles escollos de Escila y Caribdis?", "respuesta_correcta": "Estrecho de Mesina (o Messina)", "comentario_host": "A ver quién se cree Cristóbal Colón hoy. Conecta el mar Tirreno con el mar Jónico: el estrecho de Mesina. El que haya dicho el estrecho de Gibraltar que se tire al Manzanares de cabeza.", "fuentes": ["Istituto Idrografico della Marina (IIM)", "Encyclopedia Britannica"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0092", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿Qué director de cine, con tan solo 25 años, coescribió, dirigió y protagonizó en 1941 la revolucionaria película 'Ciudadano Kane' (Citizen Kane)?", "respuesta_correcta": "Orson Welles", "comentario_host": "'Rosebud'... Innovó la profundidad de campo, los techos en decorados y la narrativa no lineal. Una obra que cambió el lenguaje cinematográfico para siempre.", "fuentes": ["American Film Institute (AFI 100 Years... 100 Movies #1)", "Library of Congress"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0099", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿Qué director de animación y cofundador japonés de Studio Ghibli dirigió obras maestras como 'El viaje de Chihiro', 'La princesa Mononoke' y 'Mi vecino Totoro'?", "respuesta_correcta": "Hayao Miyazaki", "comentario_host": "El emperador de la animación tradicional dibujada a mano. 'El viaje de Chihiro' ganó el Oso de Oro de Berlín y el Óscar de animación.", "fuentes": ["Studio Ghibli Official Records", "Academy of Motion Picture Arts and Sciences"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0150", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿Qué cineasta surcoreano hizo historia en los Premios Óscar de 2020 al ganar Mejor Película y Mejor Dirección con 'Parásitos'?", "respuesta_correcta": "Bong Joon-ho", "comentario_host": "La familia viviendo en el sótano que arrolló a Hollywood.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0017", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿Qué director de cine sueco dirigió en 1957 la obra maestra existencial 'El séptimo sello', en la que el caballero Antonius Block reta a la Muerte a una partida de ajedrez durante la Peste Negra?", "respuesta_correcta": "Ingmar Bergman", "comentario_host": "Esto es cine de verdad y no los vídeos de TikTok que os devoran el cerebro. Ingmar Bergman en 1957. A ver si jugáis al ajedrez en vez de miraros las caras de pasmados.", "fuentes": ["Svenska Filminstitutet (Swedish Film Institute)", "The Criterion Collection"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0005", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿Qué archiduque heredero de la corona austrohúngara fue asesinado junto a su esposa en Sarajevo el 28 de junio de 1914 por Gavrilo Princip, detonando la Primera Guerra Mundial?", "respuesta_correcta": "Francisco Fernando de Austria (Franz Ferdinand)", "comentario_host": "Y no me salgáis con la banda de rock escocesa. El atentado que encendió la mecha de la Gran Guerra en los Balcanes.", "fuentes": ["The Sleepwalkers: How Europe Went to War in 1914 (Christopher Clark)", "Britannica"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0015", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿En qué batalla naval del 7 de octubre de 1571 la armada de la Liga Santa derrotó a la flota del Imperio Otomano en las costas de Grecia, combate en el que Miguel de Cervantes perdió la movilidad de su mano izquierda?", "respuesta_correcta": "Batalla de Lepanto", "comentario_host": "Garrido, 'la más alta ocasión que vieron los siglos pasados, los presentes, ni esperan ver los venideros'. Don Juan de Austria y Lepanto. Si has dicho Trafalgar, entrega los galones y ponte a fregar la cubierta.", "fuentes": ["Museo Naval de Madrid", "Real Academia de la Historia"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0085", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿Qué prolífico dramaturgo español, autor de 'Fuenteovejuna' y 'El caballero de Olmedo', fue apodado por Cervantes con admiración como 'el Fénix de los Ingenios'?", "respuesta_correcta": "Lope de Vega", "comentario_host": "Escribió más de mil obras de teatro, revolucionó los corrales de comedias y aún le sobraba tiempo para batirse en duelo y meterse a sacerdote.", "fuentes": ["Real Academia Española (RAE)", "Biblioteca Nacional de España"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0046", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Cómo se denomina el alótropo del carbono bidimensional compuesto por una monocapa de átomos con hibridación sp2 dispuestos en una red hexagonal tipo panal de abeja, aislado en 2004 por Andréy Gueim y Konstantín Novosiólov?", "respuesta_correcta": "Grafeno", "comentario_host": "Doscientas veces más resistente que el acero, mejor conductor que el cobre y de un solo átomo de grosor. Y lo sacaron despegando cinta adhesiva de una mina de lápiz.", "fuentes": ["Nobel Prize in Physics 2010", "Science (Vol. 306, 2004)"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0137", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿Qué bajista y cantante fundó la banda británica Motörhead en 1975 tras ser expulsado del grupo Hawkwind?", "respuesta_correcta": "Lemmy Kilmister", "comentario_host": "Bajo saturado a tope, voz rota y Jack Daniels.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0139", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿Qué banda inglesa de rock alternativo publicó en 1997 el aclamado álbum conceptual 'OK Computer'?", "respuesta_correcta": "Radiohead", "comentario_host": "Thom Yorke quejándose del capitalismo antes que vosotros.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0061", "categoria": "Cultura Pop / Gen Z / Temas Aleatorios", "dificultad": "Elevada", "pregunta": "¿Qué médico británico realizó en 1796 la primera inoculación experimental contra la viruela utilizando fluido de pústulas de viruela bovina en el niño James Phipps, sentando las bases de las vacunas?", "respuesta_correcta": "Edward Jenner", "comentario_host": "Por eso se llaman 'vacunas', porque venían de las vacas y de las granjeras de ordeño que no se contagiaban de viruela humana.", "fuentes": ["World Health Organization (WHO Smallpox Eradication)", "The Royal Society"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0019", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Cómo se denomina el test propuesto en 1950 por el matemático británico Alan Turing en su artículo 'Computing Machinery and Intelligence' para determinar si una máquina puede exhibir un comportamiento inteligente indistinguible del humano?", "respuesta_correcta": "El Test de Turing (o Juego de la Imitación)", "comentario_host": "Alan Turing formuló la pregunta: '¿Pueden pensar las máquinas?'. Y vosotros mientras tanto jugando al Candy Crush y mirando vídeos de gatitos. El Test de Turing, pionero absoluto de la computación.", "fuentes": ["Mind: A Quarterly Review of Psychology and Philosophy (Vol. 59, 1950)", "Stanford Encyclopedia of Philosophy"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0162", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "¿Qué empresa diseñó y comercializó en 1993 'Magic: The Gathering', el primer juego de cartas coleccionables moderno?", "respuesta_correcta": "Wizards of the Coast (creado por Richard Garfield)", "comentario_host": "El Black Lotus que vale más que vuestros coches juntos.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0043", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Qué valor de temperatura en la escala Celsius corresponde teóricamente al cero absoluto (0 Kelvin), punto donde cesa todo movimiento térmico clásico de las partículas?", "respuesta_correcta": "-273,15 °C (o -273 °C)", "comentario_host": "El límite inferior absoluto del termómetro universal. Más frío que el corazón de vuestras exes.", "fuentes": ["BIPM - SI Brochure", "National Institute of Standards and Technology (NIST)"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0121", "categoria": "Marcas, Empresas e Iconos Globales", "dificultad": "Elevada", "pregunta": "¿Qué conglomerado industrial surcoreano significa literalmente 'tres estrellas' en su idioma nativo?", "respuesta_correcta": "Samsung", "comentario_host": "Vendían pescado seco y fideos en 1938.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0107", "categoria": "Deportes", "dificultad": "Elevada", "pregunta": "¿En qué ciudad japonesa se disputaron los Juegos Olímpicos de Invierno de 1972, los primeros celebrados en Asia?", "respuesta_correcta": "Sapporo", "comentario_host": "Nieve en Japón, no todo es Tokio y derrapes.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0065", "categoria": "Cultura Pop / Gen Z / Temas Aleatorios", "dificultad": "Elevada", "pregunta": "¿Qué fraile agustino y botánico austríaco descubrió las leyes fundamentales de la herencia genética realizando cruces sistemáticos con plantas de guisante ('Pisum sativum') en el jardín de su abadía en Brno?", "respuesta_correcta": "Gregor Mendel", "comentario_host": "Leyes de la segregación y de la transmisión independiente. El padre indiscutible de la genética moderna.", "fuentes": ["Verhandlungen des naturforschenden Vereines in Brünn (1866)", "Stanford Encyclopedia of Philosophy"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0077", "categoria": "Geografía Física y Política", "dificultad": "Elevada", "pregunta": "¿Cuál es el desierto no polar más árido del planeta, situado en el norte de Chile entre la cordillera de la Costa y los Andes, donde se han registrado periodos de décadas sin una sola gota de lluvia?", "respuesta_correcta": "Desierto de Atacama", "comentario_host": "Tan seco y parecido a Marte que la NASA prueba allí los sensores y rovers antes de mandarlos al espacio.", "fuentes": ["European Southern Observatory (ESO Atacama)", "Britannica"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0148", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿Qué prestigioso estudio de animación japonés fue cofundado por Hayao Miyazaki e Isao Takahata en 1985?", "respuesta_correcta": "Studio Ghibli", "comentario_host": "Totoro, Mononoke y Chihiro dibujados a mano fotograma a fotograma.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0122", "categoria": "Marcas, Empresas e Iconos Globales", "dificultad": "Elevada", "pregunta": "¿En qué ciudad sueca abrió Ingvar Kamprad la primera tienda minorista de muebles de IKEA en 1958?", "respuesta_correcta": "Älmhult", "comentario_host": "Donde empezó la tortura de montar mesas con llave allen.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0050", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Cuál es el gas noble más ligero y con el punto de ebullición más bajo de todos los elementos químicos (-268,93 °C), incapaz de solidificar a presión atmosférica estándar incluso en el cero absoluto?", "respuesta_correcta": "Helio (He)", "comentario_host": "Con el que hincháis los globos para poner voz de pito. Segundo elemento más abundante del universo tras el hidrógeno.", "fuentes": ["IUPAC Gold Book", "Keesom, 'Helium'"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0109", "categoria": "Deportes", "dificultad": "Elevada", "pregunta": "¿Quién fue el entrenador del AC Milan que revolucionó la táctica europea ganando dos Copas de Europa consecutivas en 1989 y 1990?", "respuesta_correcta": "Arrigo Sacchi", "comentario_host": "Presión alta y achique de espacios cuando aún no habíais nacido.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0004", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿Qué célebre compositor y guitarrista castellonense del siglo XIX compuso la obra maestra 'Recuerdos de la Alhambra' y sentó las bases de la técnica de trémolo en la guitarra clásica?", "respuesta_correcta": "Francisco Tárrega", "comentario_host": "Victor, con lo pesadísimo que te pones con la guitarra cada vez que pillas un ron, como no te supieras a Francisco Tárrega era para partirte el mástil en la cabeza. Deja de llorarle a Giuliana y afina el oído.", "fuentes": ["Biblioteca Nacional de España", "The New Grove Dictionary of Music and Musicians"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0089", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿Qué filósofo alemán proclamó 'Dios ha muerto' en 'La gaya ciencia' y concibió conceptos como el 'Übermensch' (Superhombre) y el eterno retorno en 'Así habló Zaratustra'?", "respuesta_correcta": "Friedrich Nietzsche", "comentario_host": "Martilleando todos los valores tradicionales de la moral occidental. Nietzsche en estado puro.", "fuentes": ["Kaufmann, 'Nietzsche: Philosopher, Psychologist, Antichrist'", "Stanford Encyclopedia of Philosophy"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0133", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿Qué trompetista estadounidense grabó en 1959 el álbum 'Kind of Blue', la referencia más vendida e influyente del jazz modal?", "respuesta_correcta": "Miles Davis", "comentario_host": "Elegancia pura con sordina Harmon.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0111", "categoria": "Deportes", "dificultad": "Elevada", "pregunta": "¿En qué estadio londinense derrotó el FC Barcelona a la Sampdoria para alzar su primera Copa de Europa en mayo de 1992?", "respuesta_correcta": "Wembley", "comentario_host": "El cañonazo de Koeman, catetos.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0096", "categoria": "Cultura Pop / Gen Z / Temas Aleatorios", "dificultad": "Elevada", "pregunta": "¿Qué filósofo inglés del siglo XVII describió el estado de naturaleza humano como 'solitario, pobre, tosco, embrutecido y breve', proponiendo un Estado soberano absolutista en su tratado 'Leviatán' (1651)?", "respuesta_correcta": "Thomas Hobbes", "comentario_host": "'El hombre es un lobo para el hombre' (homo homini lupus). El contrato social firmado por miedo a morir en la anarquía.", "fuentes": ["Stanford Encyclopedia of Philosophy", "Cambridge Texts in the History of Political Thought"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0014", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Qué principio físico formulado en 1927 establece la imposibilidad teórica fundamental de conocer con simultaneidad y precisión arbitraria la posición y el momento lineal de una partícula subatómica?", "respuesta_correcta": "Principio de Incertidumbre de Heisenberg (o indeterminación)", "comentario_host": "Werner Heisenberg en 1927. Delta x por delta p mayor o igual que h barra entre dos. No es física para dummies, pero para los Butaneros debería ser cultura general básica, linces.", "fuentes": ["Stanford Encyclopedia of Philosophy (Quantum Mechanics)", "Nobel Prize in Physics 1932"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0009", "categoria": "Cultura Pop / Gen Z / Temas Aleatorios", "dificultad": "Elevada", "pregunta": "¿Qué pensador y filósofo francés ilustrado formuló en 'El espíritu de las leyes' (1748) la doctrina clásica de la división tripartita de los poderes del Estado (ejecutivo, legislativo y judicial)?", "respuesta_correcta": "Montesquieu (Barón de Montesquieu)", "comentario_host": "La base de cualquier estado democrático moderno. Si habéis dicho Voltaire o Rousseau os falta un hervor en teoría política.", "fuentes": ["Stanford Encyclopedia of Philosophy", "Bibliothèque Nationale de France"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0040", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "En el manga 'Death Note' de Tsugumi Ohba y Takeshi Obata, ¿qué manjar terrenal adora consumir de forma compulsiva el shinigami Ryuk para calmar su síndrome de abstinencia?", "respuesta_correcta": "Las manzanas", "comentario_host": "'Para los shinigamis, las manzanas son como el tabaco o el alcohol para los humanos'. Si no habéis visto Death Note no sabéis lo que es un duelo de intelectos entre Light Yagami y L.", "fuentes": ["Shōnen Jump Archives", "Death Note 13: How to Read"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0161", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "En la saga 'Juego de Tronos', ¿cómo se llama el colosal castillo ancestral de la Casa Targaryen ubicado en la bahía del Aguasnegras?", "respuesta_correcta": "Rocadragón (Dragonstone)", "comentario_host": "Construido con piedra volcánica negra y gárgolas de dragón.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0131", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿Qué vocalista lideró la banda de heavy metal Black Sabbath en sus primeros y seminales álbumes como 'Paranoid'?", "respuesta_correcta": "Ozzy Osbourne", "comentario_host": "El príncipe de las tinieblas mordiendo murciélagos.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0036", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "En el universo Marvel, ¿cuál es el metal ficticio casi indestructible originario de Wakanda que absorbe vibraciones cinéticas y con el que está forjado el escudo del Capitán América?", "respuesta_correcta": "Vibranium", "comentario_host": "No me digáis Adamantium, que ese es el de las garras de Lobezno. En Wakanda extraen Vibranium del meteorito sagrado.", "fuentes": ["Marvel Official Handbook", "Marvel Database"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0019", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Cuál es la estrella más brillante de todo el firmamento nocturno vista desde la Tierra, perteneciente a la constelación de Canis Maior y con una magnitud aparente de -1.46?", "respuesta_correcta": "Sirio (o Sirius / Alpha Canis Majoris)", "comentario_host": "No es la estrella polar ni Venus, ignorantes de la vida. Es Sirio. Miráis tanto la pantalla del móvil que no sabéis ni qué brilla en el cielo de noche.", "fuentes": ["SIMBAD Astronomical Database", "NASA SkyView"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0129", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿Qué legendario guitarrista estadounidense tocó una distorsionada versión del himno nacional en el festival de Woodstock en agosto de 1969?", "respuesta_correcta": "Jimi Hendrix", "comentario_host": "Hizo chillar a su Stratocaster para protestar por Vietnam.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0102", "categoria": "Deportes", "dificultad": "Elevada", "pregunta": "¿En qué circuito automovilístico perdió la vida el tricampeón mundial Ayrton Senna durante el Gran Premio de San Marino de 1994?", "respuesta_correcta": "Autodromo Enzo e Dino Ferrari (Imola)", "comentario_host": "La curva Tamburello, para los que solo veis la F1 por los choques.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0002", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿Qué esclavo tracio lideró entre el 73 y el 71 a.C. la mayor rebelión servil contra la República Romana, desafiando a legiones consulares desde el monte Vesubio?", "respuesta_correcta": "Espartaco", "comentario_host": "No es un gladiador de videojuego, puso en jaque a todo el Senado romano antes de que Craso lo crucificara en la Vía Apia.", "fuentes": ["Plutarco, Vidas Paralelas (Craso)", "Apiano, Guerras Civiles"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0031", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "¿Qué compañía fundada por John Carmack y John Romero revolucionó el género de disparos en primera persona en los 90 lanzando 'Wolfenstein 3D', 'DOOM' y 'Quake'?", "respuesta_correcta": "id Software", "comentario_host": "Carmack programando motores gráficos 3D en C y Romero con melena diseñando niveles satánicos. Padres del deathmatch multijugador.", "fuentes": ["Masters of Doom (David Kushner)", "Game Developers Conference Hall of Fame"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0037", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "¿Qué protagonista espartano, hijo semidiós de Zeus y conocido como el 'Fantasma de Esparta', clama venganza contra los dioses del Olimpo en la saga 'God of War'?", "respuesta_correcta": "Kratos", "comentario_host": "Piel cenicienta por las cenizas de su propia familia y las Espadas del Caos encadenadas a los brazos. Kratos, antes de irse al norte a educar a Atreus.", "fuentes": ["Sony Interactive Entertainment", "Santa Monica Studio"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0018", "categoria": "Geografía Física y Política", "dificultad": "Elevada", "pregunta": "¿Qué cabo sudafricano es el verdadero extremo geográfico más meridional del continente africano y la divisoria oficial entre los océanos Atlántico e Índico?", "respuesta_correcta": "Cabo de las Agujas (Cape Agulhas)", "comentario_host": "Si habéis vuelto a picar con el Cabo de Buena Esperanza después de que os lo dijera antes, sois incorregibles. Cabo de las Agujas, no lo olvidéis más.", "fuentes": ["International Hydrographic Organization", "South African National Parks"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0118", "categoria": "Marcas, Empresas e Iconos Globales", "dificultad": "Elevada", "pregunta": "¿Qué empresa relojera japonesa comercializó en 1969 el modelo Astron, el primer reloj de pulsera de cuarzo comercial del mundo?", "respuesta_correcta": "Seiko", "comentario_host": "Reventó a la industria suiza con un cristal de cuarzo.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0126", "categoria": "Marcas, Empresas e Iconos Globales", "dificultad": "Elevada", "pregunta": "¿Qué plataforma de venta online comenzó operando en 1994 en un garaje de Bellevue vendiendo exclusivamente libros?", "respuesta_correcta": "Amazon", "comentario_host": "Jeff Bezos empaquetando libros por el suelo.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0144", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿Qué director firmó la conocida 'Trilogía del Dólar' protagonizada por Clint Eastwood en el desierto de Tabernas?", "respuesta_correcta": "Sergio Leone", "comentario_host": "Primerísimos planos de ojos y música de Morricone.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0023", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "En el universo distópico de Warhammer 40k, ¿qué Señor de la Guerra y primarca favorito del Emperador traicionó a la Humanidad desatando la guerra civil fratricida que lleva su nombre?", "respuesta_correcta": "Horus (Horus Lupercal / La Herejía de Horus)", "comentario_host": "'Yo estaba allí el día en que Horus mató al Emperador'. Si no sabéis de Warhammer 40k es que no tenéis sangre en las venas, herejes.", "fuentes": ["Black Library - The Horus Heresy Series", "Games Workshop Lore Archives"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0012", "categoria": "Ciencia, Tecnología & Mecánica", "dificultad": "Elevada", "pregunta": "¿Cuál es el único metal de la tabla periódica que se presenta en estado líquido en condiciones estándar de presión y temperatura (25 °C y 1 atm)?", "respuesta_correcta": "Mercurio (Hg)", "comentario_host": "¡Que no me digáis plomo ni galio! El galio se funde en tu mano a 30 °C, pero a temperatura ambiente estándar el único metal líquido es el mercurio. Catetos.", "fuentes": ["IUPAC Gold Book", "Royal Society of Chemistry"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0038", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "En la saga 'Canción de Hielo y Fuego' de George R.R. Martin, ¿cómo se llama la espada ancestral de acero valyrio de la Casa Stark, empuñada por Ned Stark antes de ser decapitado con ella?", "respuesta_correcta": "Hielo (Ice)", "comentario_host": "Luego Tywin Lannister la fundió para sacar dos espadas: Guardajuramentos y Lamento de Viuda. Cultura de Poniente básica.", "fuentes": ["George R.R. Martin, 'A Game of Thrones'", "The World of Ice & Fire"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0010", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿Qué genial compositor austríaco del Clasicismo compuso la serenata 'Eine kleine Nachtmusik' (Pequeña serenata nocturna) y la ópera bufa 'Las bodas de Fígaro' antes de morir prematuramente a los 35 años?", "respuesta_correcta": "Wolfgang Amadeus Mozart", "comentario_host": "A los 5 años ya componía y tocaba el clavicordio en las cortes reales europeas. Mozart. Vosotros a los 25 años todavía no sabéis hacer una tortilla sin quemar la sartén.", "fuentes": ["Internationale Stiftung Mozarteum Salzburg", "The New Grove Dictionary of Music"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0125", "categoria": "Marcas, Empresas e Iconos Globales", "dificultad": "Elevada", "pregunta": "¿Qué animal mitológico conforma el escudo corporativo del fabricante alemán de automóviles Porsche?", "respuesta_correcta": "Un caballo (corcel del escudo de Stuttgart)", "comentario_host": "El escudo de la ciudad de Stuttgart incrustado en el capó.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0155", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "En el lore de Warhammer 40.000, ¿qué Primarca favorito del Emperador lideró la gran traición que sumió a la galaxia en la guerra civil?", "respuesta_correcta": "Horus (Horus Lupercal)", "comentario_host": "La Herejía de Horus, la mayor puñalada trapera espacial.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0015", "categoria": "Cultura Pop / Gen Z / Temas Aleatorios", "dificultad": "Elevada", "pregunta": "¿Qué célebre poetisa lírica de la antigua Grecia, nacida en la isla de Lesbos hacia el 630 a.C., fue denominada por Platón como 'la décima Musa' por la exquisitez de sus odas y fragmentos?", "respuesta_correcta": "Safo (o Safo de Lesbos)", "comentario_host": "Marta, te toca demostrar que no estás en los Butaneros solo para ver cómo nos insultamos. Safo de Lesbos. Si has dicho Homero o Afrodita, confirmas el mote que te tienen puesto los cabrones estos.", "fuentes": ["The Oxford Classical Dictionary", "Penguin Classics: Greek Lyric Poetry"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0018", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿Qué tratado firmado en febrero de 1992 en una ciudad de los Países Bajos transformó formalmente la Comunidad Económica Europea en la Unión Europea y sentó las bases de la moneda única (el euro)?", "respuesta_correcta": "Tratado de Maastricht (Tratado de la Unión Europea)", "comentario_host": "El tratado fundacional de la UE que definió los tres pilares comunitarios y los criterios de convergencia económica.", "fuentes": ["Diario Oficial de la Unión Europea (DO C 191)", "Consejo Europeo"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0001", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿En qué batalla naval del año 31 a.C. las fuerzas de Octavio derrotaron a las flotas de Marco Antonio y Cleopatra VII, sellando el fin de la República Romana?", "respuesta_correcta": "Batalla de Accio (o Actium)", "comentario_host": "A ver si os suena de algo Roma o solo sabéis ver memes de gladiadores. Marco Antonio y Cleopatra salieron por patas en Accio. El que haya dicho Salamina o Lepanto que se lo haga mirar.", "fuentes": ["Oxford Classical Dictionary", "Encyclopedia Britannica"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0006", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿En qué año exacto se celebraron las primeras elecciones municipales democráticas en España tras el franquismo, en las que Tierno Galván llegó a la alcaldía de Madrid mediante pacto?", "respuesta_correcta": "1979 (3 de abril de 1979)", "comentario_host": "Para todos los chavales de Madrid: el 'Viejo Profesor' Enrique Tierno Galván no cayó del cielo en los 80, entró en abril de 1979. Si habéis dicho 1978 u 82, devolved el abono transporte de la EMT.", "fuentes": ["Ministerio del Interior - Archivo Histórico Electoral", "Ayuntamiento de Madrid"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0158", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "En la novela 'Dune' de Frank Herbert, ¿cómo llaman los Fremen a los gigantescos gusanos de arena que dominan el planeta Arrakis?", "respuesta_correcta": "Shai-Hulud (o Hacedor)", "comentario_host": "Cabalgar sobre ellos con ganchos de montar o morir aplastado.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0012", "categoria": "Geografía Física y Política", "dificultad": "Elevada", "pregunta": "¿Cuál es el segundo río más largo de Europa, que nace en la Selva Negra alemana y atraviesa o bordea diez países distintos antes de desembocar en el mar Negro?", "respuesta_correcta": "Río Danubio", "comentario_host": "JAE, que te fuiste a Liechtenstein y Centroeuropa supuestamente a culturizarte. El Danubio, hombre. Si has dicho el Rin o el Sena es que no saliste de la habitación del colegio mayor, virgen.", "fuentes": ["International Commission for the Protection of the Danube River (ICPDR)", "Britannica"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0117", "categoria": "Marcas, Empresas e Iconos Globales", "dificultad": "Elevada", "pregunta": "¿En qué ciudad bávara tienen su sede central histórica las multinacionales deportivas Adidas y Puma, fundadas por los hermanos Dassler?", "respuesta_correcta": "Herzogenaurach", "comentario_host": "Pueblo dividido entre dos hermanos que no se podían ni ver.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0114", "categoria": "Deportes", "dificultad": "Elevada", "pregunta": "¿En qué prueba atlética estableció Bob Beamon su plusmarca mundial de 8,90 metros en los Juegos Olímpicos de México 1968?", "respuesta_correcta": "Salto de longitud", "comentario_host": "Saltó al siglo XXI de un solo brinco.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0130", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿Qué compositor polaco de la era romántica compuso casi la totalidad de su obra para piano solo, incluyendo célebres nocturnos y polonesas?", "respuesta_correcta": "Frédéric Chopin", "comentario_host": "Poesía al piano mientras se moría de tuberculosis.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0097", "categoria": "Música", "dificultad": "Elevada", "pregunta": "¿Qué pianista y compositor polaco del Romanticismo compuso célebres nocturnos, polonesas y baladas dedicadas a la independencia de su patria natal, viviendo exiliado en París?", "respuesta_correcta": "Frédéric Chopin (Fryderyk Chopin)", "comentario_host": "El poeta del piano por excelencia. Murió de tuberculosis en París y pidió que su corazón fuera enterrado en Varsovia.", "fuentes": ["The Fryderyk Chopin Institute (Varsovia)", "The New Grove Dictionary of Music"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0033", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "¿Cómo se llama el científico y físico teórico con gafas y perilla que protagoniza la saga de videojuegos 'Half-Life', armado con su icónica palanca de hierro?", "respuesta_correcta": "Gordon Freeman", "comentario_host": "No dice una sola palabra en toda la saga pero es el hombre libre que derrotó al Imperio Combine en Ciudad 17. Gordon Freeman.", "fuentes": ["Valve Corporation Archives", "Half-Life 2 Prima Official Game Guide"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0145", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿Qué actor encarnó al detective privado Rick Deckard en el clásico de ciencia ficción de 1982 'Blade Runner'?", "respuesta_correcta": "Harrison Ford", "comentario_host": "Cazando replicantes bajo la lluvia ácida de Los Ángeles.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0108", "categoria": "Deportes", "dificultad": "Elevada", "pregunta": "¿Qué ciclista español, conocido como 'El Águila de Toledo', fue el primer corredor nacional en ganar el Tour de Francia en 1959?", "respuesta_correcta": "Federico Martín Bahamontes", "comentario_host": "Se paraba en los puertos a tomarse un helado esperando al resto.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0088", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿Cuál fue la primera película de habla no inglesa en la historia de los Premios de la Academia en ganar el Óscar a la Mejor Película principal en 2020?", "respuesta_correcta": "Parásitos (Parasite / Gisaengchung)", "comentario_host": "Bong Joon-ho reventando la taquilla de Hollywood con una comedia negra de suspense surcoreana sobre la lucha de clases.", "fuentes": ["Academy of Motion Picture Arts and Sciences (Oscars 2020)", "Cannes Film Festival"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0029", "categoria": "Cultura Geek / Frikadas", "dificultad": "Elevada", "pregunta": "¿Qué estudio polaco de videojuegos desarrolló la aclamada trilogía de rol de 'The Witcher' y el título 'Cyberpunk 2077'?", "respuesta_correcta": "CD Projekt RED", "comentario_host": "Geralt de Rivia repartiendo mandobles y buscando a Ciri. El estudio de Varsovia que adaptó las novelas de Andrzej Sapkowski.", "fuentes": ["CD Projekt Group Financial & Historical Reports", "The Game Awards"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0017", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿Qué revolucionario movimiento cinematográfico francés de finales de los años 50, abanderado por directores formados en 'Cahiers du Cinéma' como Truffaut, Godard y Rohmer, rompió con las convenciones del montaje tradicional?", "respuesta_correcta": "Nouvelle Vague (o Nueva Ola)", "comentario_host": "Gonzalito, tú que vas de señorito con clase en Aravaca, demuéstralo aquí. La Nouvelle Vague. Deja de tirar la caña en Instagram y culturízate un poco, que das vergüenza ajena.", "fuentes": ["Cahiers du Cinéma Archives", "British Film Institute (BFI)"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0127", "categoria": "Marcas, Empresas e Iconos Globales", "dificultad": "Elevada", "pregunta": "¿Qué empresa de telecomunicaciones finlandesa lideró la telefonía móvil mundial tras haber nacido como una fábrica de pulpa de papel en 1865?", "respuesta_correcta": "Nokia", "comentario_host": "De botas de goma y papel al 3310 indestructible.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0007", "categoria": "Historia Universal y de España", "dificultad": "Elevada", "pregunta": "¿Qué militar y político español lideró el golpe de Estado de septiembre de 1923 que instauró una dictadura militar con el beneplácito del rey Alfonso XIII hasta enero de 1930?", "respuesta_correcta": "Miguel Primo de Rivera", "comentario_host": "Capitán general de Cataluña que disolvió las Cortes y suspendió la Constitución de 1876 con el visto bueno del monarca.", "fuentes": ["Javier Tusell, 'La dictadura de Primo de Rivera'", "Congreso de los Diputados"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0001", "categoria": "Geografía Física y Política", "dificultad": "Elevada", "pregunta": "¿Cuál es la única capital de un estado soberano en el mundo que limita directamente con dos países extranjeros diferentes?", "respuesta_correcta": "Bratislava", "comentario_host": "A ver, panda de catetos, que no me digáis Viena ni París. Es la capital de Eslovaquia y hace frontera con Austria y Hungría a la vez. El que haya dicho otra cosa que se vaya a repetir la ESO.", "fuentes": ["Encyclopedia Britannica (Entry: Bratislava)", "CIA World Factbook"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0120", "categoria": "Marcas, Empresas e Iconos Globales", "dificultad": "Elevada", "pregunta": "¿Qué firma de moda italiana de alta costura fue creada en Florencia en 1921 por un antiguo botones del Hotel Savoy de Londres?", "respuesta_correcta": "Gucci (Guccio Gucci)", "comentario_host": "Miraba el equipaje de los ricos y montó un imperio.", "fuentes": ["Enciclopedia Británica", "Archivo Histórico"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 0, "aciertos": 0, "fallos": 0, "likes": 0, "dislikes": 0, "reportes": []}}, {"id": "Q-0083", "categoria": "Cine, Series de TV & Entretenimiento", "dificultad": "Elevada", "pregunta": "¿Qué cineasta británico, apodado 'el Mago del Suspenso', dirigió obras maestras como 'Psicosis', 'La ventana indiscreta' y 'Vértigo'?", "respuesta_correcta": "Alfred Hitchcock", "comentario_host": "El maestro absoluto del montaje, los cameos ocultos y el MacGuffin. Si habéis dicho Welles o Kubrick, casi pero no.", "fuentes": ["British Film Institute (BFI)", "Truffaut, 'El cine según Hitchcock'"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0076", "categoria": "Geografía Física y Política", "dificultad": "Elevada", "pregunta": "¿Qué estrecho marítimo de importancia geoestratégica crítica conecta el golfo Pérsico con el golfo de Omán y el mar Arábigo, por donde transita un tercio de todo el petróleo transportado por mar del mundo?", "respuesta_correcta": "Estrecho de Ormuz", "comentario_host": "Entre Irán y Omán. Si alguien bloquea Ormuz, el precio del barril de crudo se dispara por las nubes en diez minutos.", "fuentes": ["U.S. Energy Information Administration (EIA)", "International Maritime Organization"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}, {"id": "Q-0062", "categoria": "Cultura Pop / Gen Z / Temas Aleatorios", "dificultad": "Elevada", "pregunta": "¿Qué proteína globular cuaternaria rica en hierro, presente en los eritrocitos, es la encargada del transporte de oxígeno molecular desde los pulmones a los tejidos periféricos?", "respuesta_correcta": "Hemoglobina", "comentario_host": "La que le da el color rojo a la sangre gracias a sus cuatro grupos hemo con átomos de hierro.", "fuentes": ["Perutz, Nature (1960)", "Nobel Prize in Chemistry 1962"], "estado": "activa", "motivo_revision": null, "estadisticas": {"veces_jugada": 1, "aciertos": 0, "fallos": 0, "likes": 1, "dislikes": 0, "reportes": []}}];
+    const BUTANEROS = ["Victor", "Llopis", "Parra", "Huerta", "Andrés", "Marta", "JAE", "Adri", "Mandres", "Sergio Díez", "Garrido", "Gonzalito", "Cadenas", "Jorge"];
+    
+    // Estado en memoria de la sesión
+    let indiceActual = 0;
+    const estadoRespuestas = PREGUNTAS.map((p, idx) => ({
+      id: p.id || `Q-${String(idx+1).padStart(4, '0')}`,
+      jugador: BUTANEROS[idx % BUTANEROS.length],
+      acierto: null,
+      val: "sin_valorar",
+      etiquetas: [],
+      comentario: ""
+    }));
+
+    function init() {
+      const sel = document.getElementById("selector-pregunta");
+      sel.innerHTML = "";
+      PREGUNTAS.forEach((p, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = `${i+1}. [${p.id || 'Q'} - ${p.categoria || 'Gen'}]`;
+        sel.appendChild(opt);
+      });
+
+      const selJ = document.getElementById("select-jugador");
+      selJ.innerHTML = "";
+      BUTANEROS.forEach(j => {
+        const opt = document.createElement("option");
+        opt.value = j;
+        opt.textContent = j;
+        selJ.appendChild(opt);
+      });
+
+      renderPregunta();
+    }
+
+    function renderPregunta() {
+      const p = PREGUNTAS[indiceActual];
+      const st = estadoRespuestas[indiceActual];
+
+      document.getElementById("selector-pregunta").value = indiceActual;
+      document.getElementById("badge-cat").textContent = p.categoria || "General";
+      document.getElementById("badge-qid").textContent = st.id;
+      document.getElementById("txt-pregunta").textContent = p.pregunta;
+      
+      document.getElementById("select-jugador").value = st.jugador;
+
+      // Estado de botones de acierto
+      document.getElementById("btn-acierto").classList.toggle("active", st.acierto === true);
+      document.getElementById("btn-fallo").classList.toggle("active", st.acierto === false);
+
+      // Respuesta oculta por defecto al cambiar
+      document.getElementById("box-respuesta").style.display = "none";
+      document.getElementById("btn-revelar").style.display = "block";
+      document.getElementById("txt-respuesta").textContent = p.respuesta_correcta;
+      document.getElementById("txt-host").textContent = p.comentario_host || "Sin comentario del Host.";
+
+      // Botones like/dislike
+      document.getElementById("btn-like").classList.toggle("selected-like", st.val === "like");
+      document.getElementById("btn-dislike").classList.toggle("selected-dislike", st.val === "dislike");
+    }
+
+    function irAPregunta(idx) {
+      indiceActual = parseInt(idx, 10);
+      renderPregunta();
+    }
+
+    function cambiarPregunta(delta) {
+      const nuevo = indiceActual + delta;
+      if (nuevo >= 0 && nuevo < PREGUNTAS.length) {
+        indiceActual = nuevo;
+        renderPregunta();
+      }
+    }
+
+    function asignarJugador(j) {
+      estadoRespuestas[indiceActual].jugador = j;
+    }
+
+    function marcarAcierto(esAcierto) {
+      estadoRespuestas[indiceActual].acierto = esAcierto;
+      renderPregunta();
+    }
+
+    function toggleRespuesta() {
+      document.getElementById("box-respuesta").style.display = "block";
+      document.getElementById("btn-revelar").style.display = "none";
+    }
+
+    function valorar(tipo) {
+      const st = estadoRespuestas[indiceActual];
+      st.val = (st.val === tipo) ? "sin_valorar" : tipo;
+      renderPregunta();
+    }
+
+    // Manejo de Modal de Reporte
+    function abrirModalReporte() {
+      const st = estadoRespuestas[indiceActual];
+      document.querySelectorAll(".tag-chip").forEach(chip => {
+        const tag = chip.getAttribute("onclick").match(/'([^']+)'/)[1];
+        chip.classList.toggle("active", st.etiquetas.includes(tag));
+      });
+      document.getElementById("modal-comentario").value = st.comentario;
+      document.getElementById("modal-reporte").style.display = "flex";
+    }
+
+    function cerrarModalReporte() {
+      document.getElementById("modal-reporte").style.display = "none";
+    }
+
+    function toggleTag(el, tag) {
+      el.classList.toggle("active");
+    }
+
+    function guardarReporte() {
+      const st = estadoRespuestas[indiceActual];
+      const tags = [];
+      document.querySelectorAll(".tag-chip.active").forEach(chip => {
+        tags.push(chip.getAttribute("onclick").match(/'([^']+)'/)[1]);
+      });
+      st.etiquetas = tags;
+      st.comentario = document.getElementById("modal-comentario").value.trim();
+      cerrarModalReporte();
+    }
+
+    // Generar bloque JSON compacto con cabecera de texto
+    function copiarResumen() {
+      const fecha = new Date().toISOString().split("T")[0];
+      
+      const payload = {
+        sesion_id: "sesion_" + Date.now(),
+        fecha: fecha,
+        partida: estadoRespuestas.map(r => ({
+          id: r.id,
+          jugador: r.jugador,
+          acierto: r.acierto,
+          val: r.val,
+          etiquetas: r.etiquetas,
+          comentario: r.comentario
+        }))
+      };
+
+      const jsonCompacto = JSON.stringify(payload);
+      const salidaFinal = `=== RESUMEN CULTURIZANDO PIBES ===\n${jsonCompacto}`;
+
+      navigator.clipboard.writeText(salidaFinal).then(() => {
+        const toast = document.getElementById("toast");
+        toast.style.display = "block";
+        setTimeout(() => toast.style.display = "none", 2500);
+      }).catch(err => {
+        alert("Error al copiar: " + err);
+      });
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
